@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));
-app.use("/api/dashboard", require("./routes/dashboard"));
+app.use("/api/feed", require("./routes/feed"));  
 
 app.get("/", (req, res) => res.send("HireHelper API running"));
 
