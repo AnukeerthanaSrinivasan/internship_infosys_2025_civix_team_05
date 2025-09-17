@@ -1,0 +1,90 @@
+.feed-container {
+  display: flex;
+  height: 100vh;        /* full screen height */
+}
+
+.sidebar {
+  width: 240px;         /* or your width */
+  flex-shrink: 0;
+  overflow-y: auto;     /* optional if sidebar can scroll too */
+}
+
+.main-content1 {
+  flex: 1;
+  overflow-y: auto;     /* ✅ critical */
+  padding: 40px;
+  background: #f8f9fa;
+}
+
+.task-card1 {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto 40px;  /* bottom space so the button clears */
+}
+
+
+.task-card {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 40px;       /* extra bottom margin for easier scroll */
+}
+
+.task-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.task-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.task-form .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.task-form label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.task-form input,
+.task-form textarea,
+.task-form select {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.task-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.btn-submit {
+  background-color: #010108;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: #242426;
+}

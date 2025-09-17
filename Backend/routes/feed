@@ -1,0 +1,54 @@
+const express = require("express");
+const auth = require("../middleware/authMiddleware");
+const Task = require("../models/Task");
+
+const router = express.Router();
+
+router.get("/",auth, async (req, res) => {
+  try {
+    const userid=req.user.id;
+    const tasks=await Task.find({
+      userId:{$ne:userid}
+    });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/add",auth,async(req,res)=>
+{
+  try{
+    const userId=req.user.id;
+    const {title,  description, location, startTime, endTime, status, category, picture}=req.body;
+    const newTask=new Task({
+      userId, title,  description, location, startTime, endTime, status, category, picture
+    });
+    await newTask.save();
+    res.json(req.body);
+  }
+  catch(err)
+  {
+    res.status(500).json(err);
+  }
+});
+
+
+router.get("/mytasks",auth,async(req,res)=>
+{
+  try{
+    const tasks=await Task.find({
+      userId:req.user.id
+    });
+    res.json(tasks);
+  } catch(err)
+  {
+    res.status(500).json(err);
+  }       
+}
+);
+
+
+
+
+module.exports = router;

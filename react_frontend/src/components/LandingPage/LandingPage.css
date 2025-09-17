@@ -1,0 +1,114 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-panel {
+  width: 30%;
+  background-color: #1a1a1a;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.left-content {
+  margin-top: auto;
+  margin-bottom: 50px;
+  line-height: 1.6;
+}
+
+.right-panel {
+  width: 70%;
+  padding: 20px;
+  position: relative;
+}
+
+.signup-link {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.signup-link a {
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 50px;
+}
+
+.content h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.content p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.login-btn {
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.illustration {
+  max-width: 100%;
+  margin-top: 20px;
+}
+
+.illustration img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .left-panel, .right-panel {
+    width: 100%;
+  }
+  
+  .left-panel {
+    height: auto;
+    padding-bottom: 30px;
+  }
+  
+  .content {
+    padding-top: 60px;
+  }
+}

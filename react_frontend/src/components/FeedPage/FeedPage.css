@@ -1,0 +1,327 @@
+/* Make the outer container fill the screen but allow child scrolling */
+.feed-container {
+  display: flex;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;           /* full viewport height */
+  overflow: hidden;        /* hide body scroll – sidebar stays fixed */
+}
+
+/* Let only the main content scroll vertically */
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  background: #f8f9fa;
+
+  /* 👇 critical for scrolling */
+  overflow-y: auto;
+  max-height: 100vh;       /* limit height to viewport */
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+/* The form card just takes natural height */
+.task-card {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 40px;     /* space at bottom so last button is visible */
+}
+
+.loading, .error, .no-tasks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+}
+
+.error {
+  color: #ff4d4f;
+}
+
+.no-tasks {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
+}
+
+/* Main content layout */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Header styling - Modified to position elements higher */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Changed from center to flex-start */
+  padding: 12px 16px 16px 16px; /* Reduced top padding */
+  background-color: white;
+  border-bottom: 1px solid #e1e1e1;
+  flex-shrink: 0;
+  min-height: 60px; /* Set minimum height */
+}
+
+/* Task grid container */
+.task-grid-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* Task grid */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Task card improvements */
+.task-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.task-image {
+  height: 160px;
+  overflow: hidden;
+}
+
+.task-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.task-content {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.task-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.task-details {
+  margin-bottom: 16px;
+}
+
+.task-location, .task-dates {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.icon {
+  color: #888;
+}
+
+.request-button {
+  margin-top: auto;
+  padding: 10px 16px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.request-button:hover {
+  background-color: #333;
+}
+
+.request-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Search bar improvements - Modified for higher positioning */
+.search-bar {
+  position: relative;
+  width: 300px;
+  margin-top: 4px; /* Added slight top margin for better positioning */
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-bar input:focus {
+  border-color: #666;
+}
+
+.search-bar .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #666;
+}
+
+/* User profile improvements - Modified for higher positioning */
+.user-profile {
+  position: relative;
+  margin-top: 4px; /* Added slight top margin for better positioning */
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-container:hover {
+  background-color: #f5f5f5;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.user-email {
+  font-size: 12px;
+  color: #666;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 200px;
+  z-index: 1000;
+  margin-top: 8px;
+}
+
+.profile-dropdown ul {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.profile-dropdown li {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.profile-dropdown li:hover {
+  background-color: #f5f5f5;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .feed-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e1e1e1;
+  }
+  
+  .calendar-widget {
+    display: none;
+  }
+  
+  .task-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 16px; /* Consistent padding for mobile */
+  }
+  
+  .search-bar {
+    max-width: 100%;
+    width: 100%;
+    margin-top: 0; /* Remove top margin on mobile */
+  }
+  
+  .user-profile {
+    margin-top: 0; /* Remove top margin on mobile */
+  }
+}
