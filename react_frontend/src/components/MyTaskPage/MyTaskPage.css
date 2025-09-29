@@ -1,0 +1,454 @@
+/* MyTaskPage.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.feed-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar Styles */
+
+.sidebar {
+  width: 180px;
+  background-color: #fff;
+  border-right: 1px solid #e1e1e1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.logo {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid #e1e1e1;
+  display: flex;
+  align-items: center;
+}
+
+.logo::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #000;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.sidebar-nav {
+  flex: 1;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+}
+
+.sidebar-nav li {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-nav li:hover {
+  background-color: #f0f0f0;
+}
+
+.sidebar-nav li.active {
+  background-color: #000;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.count2 {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 1px 5px;
+  font-size: 11px;
+}
+
+.sidebar-nav li:not(.active) .count {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* Calendar Widget */
+.calendar-widget {
+  padding: 16px;
+  border-top: 1px solid #e1e1e1;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.current-month {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Calendar navigation buttons */
+.prev-month, .next-month {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  height: auto;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.weekday {
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 4px;
+  font-size: 10px;
+}
+
+.day {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.day.selected {
+  background-color: #000;
+  color: white;
+}
+
+.day.prev-month, .day.next-month {
+  color: #ccc;
+}
+
+/* Main Content - Modified structure */
+.main-content {
+  flex: 1;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Fixed Header - Sticky at top */
+.header, .header1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 12px 16px;
+  border-radius: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+/* Scrollable Content Area */
+.scrollable-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.search-bar2 {
+  flex: 1;
+  max-width: 400px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar2 input {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Search button styles */
+.search-bar2 .search-icon2 {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #666;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 4px 8px;
+  gap: 8px;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 200px;
+  z-index: 10;
+  margin-top: 10px;
+}
+
+.profile-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-dropdown li {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-dropdown li:hover {
+  background-color: #f5f5f5;
+}
+
+.profile-dropdown li:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.profile-dropdown li:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: #6c5ce7;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.user-email {
+  font-size: 11px;
+  color: #666;
+}
+
+/* Add New Task Button - Now inside scrollable content */
+.add-task-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+/* Styles for the add task button */
+.add-task-button {
+  padding: 8px 16px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.add-task-button:hover {
+  background-color: #333;
+}
+
+/* Task Grid */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 0;
+}
+
+.task-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.task-image {
+  height: 140px;
+  overflow: hidden;
+  position: relative;
+}
+
+.task-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.task-title {
+  padding: 12px 16px 4px;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  text-align: center;
+}
+
+.task-description {
+  padding: 0 16px 8px;
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  text-align: left;
+  direction: ltr;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.task-details {
+  padding: 0 16px 8px;
+  font-size: 11px;
+  color: #666;
+}
+
+.task-location, .task-dates {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  gap: 4px;
+}
+
+.location-icon, .calendar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.task-dates span {
+  font-size: 10px;
+}
+
+/* Task Status */
+.task-status-container {
+  margin: 0 16px 16px;
+  display: flex;
+}
+
+/* Removed .task-status styles as we're now using Shadcn UI Badge component */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .feed-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e1e1e1;
+  }
+  
+  .calendar-widget {
+    display: none;
+  }
+  
+  .task-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .header, .header1 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+  }
+  
+  .search-bar {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header, .header1 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+  }
+  
+  .search-bar {
+    max-width: 100%;
+    width: 100%;
+  }
+}

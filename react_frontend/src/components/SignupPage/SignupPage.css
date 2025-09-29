@@ -1,0 +1,152 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.signup-container {
+  display: flex;
+  height: 100vh;
+}
+
+.signup-form-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-form {
+  width: 80%;
+  max-width: 450px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-form h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.signup-description {
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.name-fields {
+  display: flex;
+  gap: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.signup-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.google-signup {
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.login-link {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #000000;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.signup-image {
+  width: 50%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.signup-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .signup-container {
+    flex-direction: column-reverse;
+  }
+  
+  .signup-form-container, .signup-image {
+    width: 100%;
+  }
+  
+  .signup-image {
+    height: 30vh;
+  }
+  
+  .signup-form-container {
+    padding: 20px 0;
+  }
+  
+  .signup-form {
+    width: 90%;
+    max-width: none;
+    padding: 0 20px;
+  }
+  
+  .name-fields {
+    flex-direction: column;
+    gap: 0;
+  }
+}
