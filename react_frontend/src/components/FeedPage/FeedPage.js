@@ -49,8 +49,13 @@ const FeedPage = () => {
   }, []);
 
   // Request button
+  const [userEmail, setUserEmail] = useState('');
+  useEffect(() => {
+  const email = localStorage.getItem('email');
+  if (email) setUserEmail(email);
+  }, []);
   // Replace the old handleRequest with this
-const handleRequest = async (taskId, taskDescription) => {
+const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) => {
   try {
     setLoadingRequests(prev => ({ ...prev, [taskId]: true }));
 
@@ -70,8 +75,22 @@ const handleRequest = async (taskId, taskDescription) => {
         }
       }
     );
-
+    const notification=await axios.post(
+      'http://localhost:5000/api/notification/add',
+      {
+        userId: taskOwnerId, // ID of the task owner
+        message: `${userEmail} has requested your task "${taskTitle}"`
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
     alert(`Request sent successfully for Task ${taskId}`);
+    console.log("Notification sent");
+    console.log(notification.data);
     console.log(response.data);
   } catch (err) {
     console.error(err.response?.data || err.message);
@@ -113,11 +132,6 @@ const handleRequest = async (taskId, taskDescription) => {
   const handlePrevMonth = () => setCurrentMonth(prev => prev === 0 ? (setCurrentYear(y => y - 1), 11) : prev - 1);
   const handleNextMonth = () => setCurrentMonth(prev => prev === 11 ? (setCurrentYear(y => y + 1), 0) : prev + 1);
   const handleDateSelect = (day, isCurrentMonth) => { if (isCurrentMonth) setSelectedDate(new Date(currentYear, currentMonth, day)); };
-  const [userEmail, setUserEmail] = useState('');
-useEffect(() => {
-  const email = localStorage.getItem('email');
-  if (email) setUserEmail(email);
-}, []);
 
   // Format date and time
   const formatDate = (dateString) => {
@@ -260,7 +274,7 @@ useEffect(() => {
                     </div>
                     <button 
                       className="request-button" 
-                      onClick={() => handleRequest(task._id,task.description)} 
+                      onClick={() => handleRequest(task._id,task.description,task.userId, task.title)} 
                       disabled={loadingRequests[task._id]}
                     >
                       {loadingRequests[task._id] ? 'Sending...' : 'Request'}

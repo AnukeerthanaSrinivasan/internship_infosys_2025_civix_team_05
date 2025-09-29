@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaBell } from "react-icons/fa"; 
 import "./RequestPage.css";
 
 function RequestPage() {
@@ -8,12 +9,17 @@ function RequestPage() {
   const [activeNav, setActiveNav] = useState("requests");
   const [activeTab, setActiveTab] = useState("all");
   const [requests, setRequests] = useState([]);
-const [userEmail, setUserEmail] = useState('');
-useEffect(() => {
-  const email = localStorage.getItem('email');
-  if (email) setUserEmail(email);
-}, []);
-  // Fetch requests from backend
+  const [userEmail, setUserEmail] = useState('');
+  const [notifications, setNotifications] = useState([]); 
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  // Get user email
+  useEffect(() => {
+    const email = localStorage.getItem('email');
+    if (email) setUserEmail(email);
+  }, []);
+
+  // Fetch requests
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -29,7 +35,29 @@ useEffect(() => {
     fetchRequests();
   }, []);
 
-  // Handle Accept
+  // Fetch notifications initially and every 5 seconds
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5000/api/notification/get", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setNotifications(res.data);
+      } catch (err) {
+        console.error("Error fetching notifications:", err);
+      }
+    };
+
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 5000); // poll every 5s
+    return () => clearInterval(interval);
+  }, []);
+
+  // Toggle notification dropdown
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
+
+  // Accept request
   const handleAccept = async (req) => {
     try {
       const token = localStorage.getItem("token");
@@ -37,37 +65,49 @@ useEffect(() => {
         "http://localhost:5000/api/myrequest/accept",
         {
           taskId: req.task._id,
-          requestId: req._id,        // send the requestId
+          requestId: req._id,
           description: req.description,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Update the request's status in UI
-      setRequests((prev) =>
-        prev.map((r) =>
-          r._id === req._id ? { ...r, status: "accepted" } : r
-        )
+      setRequests(prev =>
+        prev.map(r => r._id === req._id ? { ...r, status: "accepted" } : r)
       );
     } catch (err) {
       console.error("Error accepting request:", err);
     }
   };
+// Mark notification as read
+const markAsRead = async (notificationId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.put(
+      "http://localhost:5000/api/notification/update",
+      { notificationId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-  // Handle Decline (optional backend later)
+    // Update local state
+    setNotifications(prev =>
+      prev.map(n => n._id === notificationId ? { ...n, isRead: true } : n)
+    );
+  } catch (err) {
+    console.error("Error marking notification as read:", err);
+  }
+};
+
+  // Decline request
   const handleDecline = (id) => {
-    setRequests((prev) =>
-      prev.map((r) =>
-        r._id === id ? { ...r, status: "rejected" } : r
-      )
+    setRequests(prev =>
+      prev.map(r => r._id === id ? { ...r, status: "rejected" } : r)
     );
   };
 
-  // Filter requests by tab
-  const filteredRequests =
-    activeTab === "unread"
-      ? requests.filter((r) => r.status === "pending")
-      : requests;
+  // Filter requests
+  const filteredRequests = activeTab === "unread"
+    ? requests.filter(r => r.status === "pending")
+    : requests;
 
   return (
     <div className="request-container">
@@ -100,27 +140,53 @@ useEffect(() => {
 
       {/* Main content */}
       <div className="main-content123">
-        <br />
         <div className="top-bar123">
           <form className="search-bar123">
             <input type="text" placeholder="Search requests..." />
           </form>
+
           <div className="tabs">
-            <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>
-              All Req
-            </button>
-            <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>
-              Pending
+            <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
+            <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Pending</button>
+          </div>
+
+          {/* Notification bell */}
+          <div className="notification-container">
+            <FaBell className="notification-icon" onClick={toggleDropdown} />
+            {notifications.filter(n => !n.isRead).length > 0 && (
+              <span className="badge">{notifications.filter(n => !n.isRead).length}</span>
+            )}
+            {showDropdown && (
+  <div className="notification-dropdown">
+    {notifications.filter(n => !n.isRead).length === 0 ? (
+      <p>No notifications</p>
+    ) : (
+      notifications
+        .filter(n => !n.isRead) // only show unread
+        .map(n => (
+          <div key={n._id} className="notification-item unread">
+            <div>{n.message}</div>
+            <button 
+              className="mark-read-btn"
+              onClick={() => markAsRead(n._id)}
+            >
+              Mark as Read
             </button>
           </div>
+        ))
+    )}
+  </div>
+)}
+
+
+          </div>
+
+          {/* User info */}
           <div className="user-profile">
             <div className="avatar">S</div>
-            <div>
-              <div className="user-info">
-                <div className="user-name">{userEmail.split('@')[0]}</div>
-                <div className="user-email">{userEmail}</div>
-
-              </div>
+            <div className="user-info">
+              <div className="user-name">{userEmail.split('@')[0]}</div>
+              <div className="user-email">{userEmail}</div>
             </div>
           </div>
         </div>
@@ -141,12 +207,8 @@ useEffect(() => {
                   <div className="actions">
                     {req.status === "pending" ? (
                       <>
-                        <button onClick={() => handleAccept(req)} className="pill accept">
-                          Accept
-                        </button>
-                        <button onClick={() => handleDecline(req._id)} className="pill decline">
-                          Decline
-                        </button>
+                        <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
+                        <button onClick={() => handleDecline(req._id)} className="pill decline">Decline</button>
                       </>
                     ) : (
                       <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
@@ -155,9 +217,7 @@ useEffect(() => {
                     )}
                   </div>
                 </div>
-                <div className="request-time">
-                  {new Date(req.createdAt).toLocaleString()}
-                </div>
+                <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>
               </div>
             ))
           )}
