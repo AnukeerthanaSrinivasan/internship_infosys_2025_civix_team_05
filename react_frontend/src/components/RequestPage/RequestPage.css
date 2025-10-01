@@ -1,9 +1,122 @@
+/* Container */
 .request-container {
   display: flex;
   height: 100vh;
   font-family: system-ui, -apple-system, sans-serif;
   background: #fff;
   color: #111827;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-right: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+/* Sidebar navigation */
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  transition: 0.2s;
+  color: #111827; /* default text */
+  background-color: transparent; /* default background */
+}
+
+/* Active / Selected item */
+.sidebar-nav li.active {
+  background-color: #111827; /* black background */
+  color: #fff; /* white text */
+}
+
+/* Hover only for non-active items */
+.sidebar-nav li:not(.active):hover {
+  background-color: #111827; /* black on hover */
+  color: #fff; /* white text */
+}
+
+/* Count badge in sidebar */
+.count {
+  font-size: 12px;
+  background: #e5e7eb;
+  padding: 2px 6px;
+  border-radius: 12px;
+}
+
+/* Calendar at bottom of sidebar */
+.calendar-widget {
+  margin-top: auto;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.calendar-header button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.current-month {
+  font-weight: 600;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+
+.weekday {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.day {
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.day:hover {
+  background: #f3f4f6;
+}
+
+.day.selected {
+  background: #111827;
+  color: #fff;
+}
+
+.day.inactive {
+  color: #cbd5e1;
 }
 
 /* Main content */
@@ -14,18 +127,21 @@
   overflow-y: auto;
   flex-direction: column;
 }
+
 .top-bar123 {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
 }
+
 .search-bar123 input {
   border: 1px solid #e5e7eb;
   padding: 6px 12px;
   border-radius: 6px;
   width: 220px;
 }
+
 .notification-container {
   position: relative;
   display: inline-block;
@@ -39,11 +155,10 @@
   width: 320px;
   max-height: 420px;
   overflow-y: auto;
-
   background: #fff;
-  border: 1px solid #222;                 /* darker border for contrast */
-  border-radius: 12px;                    /* smooth rounded corners */
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25); /* stronger depth for dark theme */
+  border: 1px solid #222;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
   padding: 0;
 }
 
@@ -59,14 +174,14 @@
 }
 
 .notification-item:hover {
-  background: #f2f2f2;                     /* subtle grey on hover */
-  transform: translateX(2px);              /* tiny slide for feedback */
+  background: #f2f2f2;
+  transform: translateX(2px);
 }
 
 .notification-item.unread {
   font-weight: 600;
-  background-color: #fafafa;               /* light highlight */
-  border-left: 4px solid #000;             /* black accent stripe */
+  background-color: #fafafa;
+  border-left: 4px solid #000;
 }
 
 .notification-item.read {
@@ -90,25 +205,27 @@
   background: #333;
 }
 
-/* Optional: thin scrollbar for a cleaner scroll area */
 .notification-dropdown::-webkit-scrollbar {
   width: 6px;
 }
+
 .notification-dropdown::-webkit-scrollbar-thumb {
   background-color: #bbb;
   border-radius: 3px;
 }
+
 .notification-dropdown::-webkit-scrollbar-thumb:hover {
   background-color: #999;
 }
 
-/* Tabs on right */
+/* Tabs */
 .tabs {
   display: flex;
   gap: 8px;
   margin-left: auto;
   margin-right: 20px;
 }
+
 .tabs button {
   border: 1px solid #e5e7eb;
   background: #fff;
@@ -117,16 +234,19 @@
   cursor: pointer;
   font-size: 14px;
 }
+
 .tabs button.active {
   background: #111827;
   color: #fff;
 }
 
+/* User profile */
 .user-profile {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .avatar {
   width: 32px;
   height: 32px;
@@ -137,10 +257,12 @@
   justify-content: center;
   font-weight: bold;
 }
+
 .username {
   font-size: 14px;
   font-weight: 600;
 }
+
 .email {
   font-size: 12px;
   color: #6b7280;
@@ -152,11 +274,13 @@
   font-weight: 600;
   margin-bottom: 12px;
 }
+
 .request-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
 .request-item {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -165,24 +289,29 @@
   justify-content: space-between;
   align-items: flex-start;
 }
+
 .request-info h4 {
   font-size: 14px;
   font-weight: 600;
 }
+
 .request-title {
   font-size: 13px;
   color: #374151;
   margin-bottom: 4px;
 }
+
 .request-desc {
   font-size: 13px;
   color: #6b7280;
   margin-bottom: 8px;
 }
+
 .actions {
   display: flex;
   gap: 8px;
 }
+
 .pill {
   padding: 4px 10px;
   border-radius: 16px;
@@ -191,17 +320,16 @@
   cursor: pointer;
 }
 
-/* Buttons */
 .pill.accept {
   background: #111827;
   color: #fff;
 }
+
 .pill.decline {
   background: #f3f4f6;
   color: #374151;
 }
 
-/* Status badges (after click) */
 .status {
   font-weight: 600;
   padding: 4px 12px;
@@ -209,10 +337,12 @@
   font-size: 13px;
   display: inline-block;
 }
+
 .accept-badge {
   background-color: #22c55e;
   color: #fff;
 }
+
 .decline-badge {
   background-color: #ef4444;
   color: #fff;
@@ -222,4 +352,24 @@
   font-size: 12px;
   color: #6b7280;
   white-space: nowrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .main-content123 {
+    padding: 15px;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
 }
