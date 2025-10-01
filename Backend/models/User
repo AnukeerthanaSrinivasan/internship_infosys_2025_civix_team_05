@@ -1,41 +1,12 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  phone: {
-    type: String,
-    required: false,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  // 🔹 For Forgot Password
-  resetOtp: {
-    type: String,
-    default: null,
-  },
-  resetOtpExpiry: {
-    type: Date,
-    default: null,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  firstName: { type: String, required: true },
+  lastName: { type: String },
+  email: { type: String, required: true, unique: true },
+  phone: { type: String },
+  password: { type: String, required: true },
+  profilepicture: { type: String,required: true },
 });
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.models.User || mongoose.model("User", UserSchema);

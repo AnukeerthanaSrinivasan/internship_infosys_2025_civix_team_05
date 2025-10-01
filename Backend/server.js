@@ -10,12 +10,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/feed", require("./routes/feed"));  
 app.use("/api/myrequest", require("./routes/myrequest"));
 app.use("/api/requests", require("./routes/request"));
 app.use("/api/notification",require("./routes/notification"));
+app.use("/api/settings",require("./routes/settings"));
 app.get("/", (req, res) => res.send("HireHelper API running"));
 
 

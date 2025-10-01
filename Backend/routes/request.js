@@ -23,7 +23,14 @@ router.post("/addrequest",auth,async(req,res)=>{
     try{
         const userId=req.user.id; 
         const {taskId,description}=req.body;
-        const newRequest=new request({
+
+        const existingrequest=await request.findOne({task:taskId,requester:userId});
+        if(existingrequest)
+        {
+            return res.status(400).json({error:"Request already exists for this task by the user"});
+        }
+        else{       
+            const newRequest=new request({
             task:taskId,
             requester:userId,
             description,
@@ -31,6 +38,7 @@ router.post("/addrequest",auth,async(req,res)=>{
         });
         await newRequest.save();
         res.json(newRequest);
+    }
     }
     catch(err)
     {
