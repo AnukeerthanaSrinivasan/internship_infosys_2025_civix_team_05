@@ -101,8 +101,8 @@ const SettingsPage = () => {
         <ul className="sidebar-nav">
           <li className={activeNav === "feed" ? "active" : ""} onClick={() => { setActiveNav("feed"); navigate("/feed"); }}>Feed</li>
           <li className={activeNav === "myTasks" ? "active" : ""} onClick={() => { setActiveNav("myTasks"); navigate("/my-tasks"); }}>My Tasks</li>
-          <li className={activeNav === "requests" ? "active" : ""} onClick={() => { setActiveNav("requests"); navigate("/requests"); }}>Requests</li>
-          <li className={activeNav === "myRequests" ? "active" : ""} onClick={() => { setActiveNav("myRequests"); navigate("/my-requests"); }}>My Requests</li>
+          <li className={activeNav === "requests" ? "active" : ""} onClick={() => { setActiveNav("requests"); navigate("/request"); }}>Requests</li>
+          <li className={activeNav === "myRequests" ? "active" : ""} onClick={() => { setActiveNav("myRequests"); navigate("/my-request"); }}>My Requests</li>
           <li className={activeNav === "addTask" ? "active" : ""} onClick={() => { setActiveNav("addTask"); navigate("/add-task"); }}>Add Task</li>
           <li className={activeNav === "settings" ? "active" : ""} onClick={() => { setActiveNav("settings"); navigate("/settings"); }}>Settings</li>
         </ul>

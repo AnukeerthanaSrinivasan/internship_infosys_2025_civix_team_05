@@ -165,9 +165,7 @@ useEffect(() => {
             <li className={activeNav === 'addTask' ? 'active' : ''} onClick={() => { setActiveNav('addTask'); navigate('/add-task'); }}>
               <span>Add Task</span>
             </li>
-            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => setActiveNav('settings')}>
-              <span>Settings</span>
-            </li>
+            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => {setActiveNav('settings'); navigate('/settings')}}><span>Settings</span></li>
           </ul>
         </nav>
 
@@ -227,7 +225,12 @@ useEffect(() => {
               <div className="profile-dropdown">
                 <ul>
                  
-                  <li>Account Settings</li>
+                  <li onClick={() => {
+        navigate('/settings');
+        setShowProfileMenu(false); // close dropdown after navigation
+      }}>
+        Account Settings
+      </li>
                  
                   <li onClick={() => {
   const confirmLogout = window.confirm("Are you sure you want to logout?");

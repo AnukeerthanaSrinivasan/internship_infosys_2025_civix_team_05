@@ -140,7 +140,7 @@ const MyTaskPage = () => {
             <li className={activeNav === 'requests' ? 'active' : ''} onClick={() => {setActiveNav('requests'); navigate('/request');}}><span>Requests</span></li>
             <li className={activeNav === 'myRequests' ? 'active' : ''} onClick={() => {setActiveNav('myRequests'); navigate('/my-request');}}><span>My Requests</span></li>
             <li className={activeNav === 'add-task' ? 'active' : ''} onClick={() => {setActiveNav('add-task'); navigate('/add-task');}}><span>Add Task</span></li>
-            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => setActiveNav('settings')}><span>Settings</span></li>
+            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => {setActiveNav('settings'); navigate('/settings')}}><span>Settings</span></li>
           </ul>
         </nav>
         {/* Calendar */}
@@ -179,7 +179,12 @@ const MyTaskPage = () => {
             {showProfileMenu && (
               <div className="profile-dropdown">
                 <ul>
-                  <li>Account Settings</li>
+                  <li onClick={() => {
+        navigate('/settings');
+        setShowProfileMenu(false); // close dropdown after navigation
+      }}>
+        Account Settings
+      </li>
                   <li onClick={() => { if(window.confirm("Are you sure you want to logout?")) { localStorage.removeItem('token'); navigate('/login'); } }}>Logout</li>
                 </ul>
               </div>

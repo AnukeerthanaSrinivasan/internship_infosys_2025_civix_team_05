@@ -51,65 +51,54 @@ const FeedPage = () => {
   // Request button
   const [userEmail, setUserEmail] = useState('');
   useEffect(() => {
-    const email = localStorage.getItem('email');
-    if (email) setUserEmail(email);
+  const email = localStorage.getItem('email');
+  if (email) setUserEmail(email);
   }, []);
-
-  // 🚀 Prevent back/forward navigation
-  useEffect(() => { 
-    window.history.pushState(null, "", window.location.href); 
-    const handlePopState = () => { 
-      window.history.pushState(null, "", window.location.href); 
-    }; 
-    window.addEventListener("popstate", handlePopState); 
-    return () => window.removeEventListener("popstate", handlePopState); 
-  }, []);
-
   // Replace the old handleRequest with this
-  const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) => {
-    try {
-      setLoadingRequests(prev => ({ ...prev, [taskId]: true }));
+const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) => {
+  try {
+    setLoadingRequests(prev => ({ ...prev, [taskId]: true }));
 
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('User not logged in');
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('User not logged in');
 
-      const response = await axios.post(
-        'http://localhost:5000/api/requests/addrequest',
-        {
-          taskId: taskId,
-          description: taskDescription  
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+    const response = await axios.post(
+      'http://localhost:5000/api/requests/addrequest',
+      {
+        taskId: taskId, // must match backend field
+        description: taskDescription  
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json' // explicitly set
         }
-      );
-      const notification=await axios.post(
-        'http://localhost:5000/api/notification/add',
-        {
-          userId: taskOwnerId,
-          message: `${userEmail} has requested your task "${taskTitle}"`
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+      }
+    );
+    const notification=await axios.post(
+      'http://localhost:5000/api/notification/add',
+      {
+        userId: taskOwnerId, // ID of the task owner
+        message: `${userEmail} has requested your task "${taskTitle}"`
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-      );
-      alert(`Request sent successfully for Task ${taskId}`);
-      console.log("Notification sent");
-      console.log(notification.data);
-      console.log(response.data);
-    } catch (err) {
-      console.error(err.response?.data || err.message);
-      alert(err.response?.data || 'Failed to send request');
-    } finally {
-      setLoadingRequests(prev => ({ ...prev, [taskId]: false }));
-    }
-  };
+      }
+    );
+    alert(`Request sent successfully for Task ${taskId}`);
+    console.log("Notification sent");
+    console.log(notification.data);
+    console.log(response.data);
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    alert(err.response?.data || 'Failed to send request');
+  } finally {
+    setLoadingRequests(prev => ({ ...prev, [taskId]: false }));
+  }
+};
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleSearchSubmit = (e) => {
@@ -228,21 +217,30 @@ const FeedPage = () => {
               <div className="user-info">
                 <div className="user-name">{userEmail.split('@')[0]}</div>
                 <div className="user-email">{userEmail}</div>
+
               </div>
             </div>
             {showProfileMenu && (
               <div className="profile-dropdown">
                 <ul>
-                  <li>Account Settings</li>
+                  
                   <li onClick={() => {
-                    const confirmLogout = window.confirm("Are you sure you want to logout?");
-                    if (confirmLogout) {
-                      localStorage.removeItem('token');
-                      navigate('/login');
-                    }
-                  }}>
-                    Logout
-                  </li>
+        navigate('/settings');
+        setShowProfileMenu(false); // close dropdown after navigation
+      }}>
+        Account Settings
+      </li>
+                  
+                  <li onClick={() => {
+  const confirmLogout = window.confirm("Are you sure you want to logout?");
+  if (confirmLogout) {
+    localStorage.removeItem('token');
+    navigate('/login');
+  }
+}}>
+  Logout
+</li>
+
                 </ul>
               </div>
             )}

@@ -168,7 +168,7 @@ function RequestPage() {
             <li className={activeNav === 'requests' ? 'active' : ''} onClick={() => { setActiveNav('requests'); navigate('/request'); }}>Requests</li>
             <li className={activeNav === 'myRequests' ? 'active' : ''} onClick={() => { setActiveNav('myRequests'); navigate('/my-request'); }}>My Requests</li>
             <li className={activeNav === 'addTask' ? 'active' : ''} onClick={() => { setActiveNav('addTask'); navigate('/add-task'); }}>Add Task</li>
-            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => setActiveNav('settings')}>Settings</li>
+            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => {setActiveNav('settings'); navigate('/settings')}}><span>Settings</span></li>
           </ul>
         </nav>
 
