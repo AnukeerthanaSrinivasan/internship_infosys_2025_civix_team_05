@@ -1,87 +1,99 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./RequestPage.css";
 
-function RequestPage() {
+const Badge = ({ variant = "default", children }) => {
+  const slug = String(variant || "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9\-]/g, "");
+  return <span className={`badge ${slug || "default"}`}>{children}</span>;
+};
+
+const STATUS_OPTIONS = ["All", "pending", "accepted", "declined"];
+
+export default function RequestPage() {
   const navigate = useNavigate();
+  const profileRef = useRef(null);
+
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [activeNav, setActiveNav] = useState("requests");
-  const [activeTab, setActiveTab] = useState("all");
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  const today = new Date();
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [selectedDate, setSelectedDate] = useState(today);
-
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      name: "William Smith",
-      title: "Meeting Tomorrow",
-      description: "Hi, let’s have a meeting tomorrow to discuss the project...",
-      time: "about 1 year ago",
-      unread: true,
-      status: "Pending",
-    },
-    {
-      id: 2,
-      name: "Alice Smith",
-      title: "Re: Project Update",
-      description: "Thank you for the project update. It looks great!...",
-      time: "about 1 year ago",
-      unread: false,
-      status: "Pending",
-    },
-    {
-      id: 3,
-      name: "Bob Johnson",
-      title: "Weekend Plans",
-      description: "Any plans for the weekend? Hiking maybe?",
-      time: "over 1 year ago",
-      unread: true,
-      status: "Pending",
-    },
-  ]);
-
-  // Fetch user info from localStorage
-  const [user, setUser] = useState({ name: "User", email: "email@example.com" });
+  const [userEmail, setUserEmail] = useState("");
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) setUser(storedUser);
+    const email = localStorage.getItem("email");
+    if (email) setUserEmail(email);
   }, []);
 
-  // Accept/Decline toggle
-  const handleStatusChange = (id, newStatus) => {
-    setRequests((prev) =>
-      prev.map((r) =>
-        r.id === id
-          ? {
-              ...r,
-              status: r.status === newStatus ? "Pending" : newStatus,
-              unread: false,
-            }
-          : r
-      )
-    );
-  };
+  // Close profile dropdown
+  useEffect(() => {
+    const handler = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
-  // Calendar helpers
-  const monthName = new Date(currentYear, currentMonth).toLocaleString("default", { month: "long" });
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  // Fetch requests
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Token missing. Please login.");
 
-  const calendarDays = [];
-  for (let i = 0; i < firstDay; i++) calendarDays.push(null);
-  for (let d = 1; d <= daysInMonth; d++) calendarDays.push(d);
+        const res = await axios.get("http://localhost:5000/api/request/all", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-  // Filter requests
-  const filteredRequests = activeTab === "unread" ? requests.filter((r) => r.unread) : requests;
+        if (!res.data.requests) throw new Error("No requests found.");
+        setRequests(res.data.requests);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load requests. Check your backend URL and token.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRequests();
+  }, []);
+
+  const filteredRequests = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!Array.isArray(requests)) return [];
+
+    return requests.filter((r) => {
+      const matchesSearch =
+        !q ||
+        r.title?.toLowerCase().includes(q) ||
+        r.description?.toLowerCase().includes(q) ||
+        r._id?.toLowerCase().includes(q);
+      const matchesStatus = statusFilter === "All" || r.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [requests, searchQuery, statusFilter]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("email");
+      navigate("/login");
+    }
   };
+
+  if (loading) return <div className="loading">Loading requests…</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="request-container">
@@ -90,14 +102,6 @@ function RequestPage() {
         <div className="logo">Hire A Helper</div>
         <nav className="sidebar-nav">
           <ul>
-<<<<<<< Updated upstream
-            <li className={activeNav === 'feed' ? 'active' : ''} onClick={() => { setActiveNav('feed'); navigate('/feed'); }}>Feed</li>
-            <li className={activeNav === 'myTasks' ? 'active' : ''} onClick={() => { setActiveNav('myTasks'); navigate('/my-tasks'); }}>My Tasks</li>
-            <li className={activeNav === 'requests' ? 'active' : ''} onClick={() => { setActiveNav('requests'); navigate('/request'); }}>Requests</li>
-            <li className={activeNav === 'myRequests' ? 'active' : ''} onClick={() => { setActiveNav('myRequests'); navigate('/my-request'); }}>My Requests</li>
-            <li className={activeNav === 'addTask' ? 'active' : ''} onClick={() => { setActiveNav('addTask'); navigate('/add-task'); }}>Add Task</li>
-            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => {setActiveNav('settings'); navigate('/settings')}}><span>Settings</span></li>
-=======
             <li
               className={activeNav === "feed" ? "active" : ""}
               onClick={() => {
@@ -105,7 +109,7 @@ function RequestPage() {
                 navigate("/feed");
               }}
             >
-              Feed <span className="count">9</span>
+              Feed
             </li>
             <li
               className={activeNav === "myTasks" ? "active" : ""}
@@ -114,13 +118,13 @@ function RequestPage() {
                 navigate("/my-tasks");
               }}
             >
-              My Tasks <span className="count">9</span>
+              My Tasks
             </li>
             <li
               className={activeNav === "requests" ? "active" : ""}
               onClick={() => {
                 setActiveNav("requests");
-                navigate("/requests");
+                navigate("/request");
               }}
             >
               Requests <span className="count">{requests.length}</span>
@@ -129,10 +133,10 @@ function RequestPage() {
               className={activeNav === "myRequests" ? "active" : ""}
               onClick={() => {
                 setActiveNav("myRequests");
-                navigate("/my-requests");
+                navigate("/my-request");
               }}
             >
-              My Requests <span className="count">23</span>
+              My Requests
             </li>
             <li
               className={activeNav === "addTask" ? "active" : ""}
@@ -152,108 +156,96 @@ function RequestPage() {
             >
               Settings
             </li>
->>>>>>> Stashed changes
           </ul>
         </nav>
-
-        {/* Calendar */}
-        <div className="calendar-widget">
-          <div className="calendar-header">
-            <button
-              onClick={() =>
-                currentMonth === 0
-                  ? (setCurrentMonth(11), setCurrentYear(currentYear - 1))
-                  : setCurrentMonth(currentMonth - 1)
-              }
-            >
-              &lt;
-            </button>
-            <div className="current-month">{monthName} {currentYear}</div>
-            <button
-              onClick={() =>
-                currentMonth === 11
-                  ? (setCurrentMonth(0), setCurrentYear(currentYear + 1))
-                  : setCurrentMonth(currentMonth + 1)
-              }
-            >
-              &gt;
-            </button>
-          </div>
-          <div className="calendar-days">
-            {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
-              <div key={d} className="weekday">{d}</div>
-            ))}
-            {calendarDays.map((d, i) => (
-              <div
-                key={i}
-                className={`day ${d && d === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() ? "selected" : ""}`}
-                onClick={() => d && setSelectedDate(new Date(currentYear, currentMonth, d))}
-              >
-                {d || ""}
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Main content */}
-      <div className="main-content">
+      <main className="main-content">
         <div className="top-bar">
-          <form className="search-bar">
-            <input type="text" placeholder="Search products..." />
-          </form>
+          <h1>Requests</h1>
 
-          <div className="tabs">
-            <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
-            <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Unread</button>
-          </div>
+          <div className="controls">
+            <form className="search-bar" onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="text"
+                placeholder="Search requests..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
 
-          {/* User Profile */}
-          <div className="user-profile" onClick={() => setShowDropdown(!showDropdown)}>
-            <div className="avatar">{user?.name?.[0]?.toUpperCase() || "U"}</div>
-            <div>
-              <div className="username">{user?.name || "User"}</div>
-              <div className="email">{user?.email || "email@example.com"}</div>
-            </div>
-            {showDropdown && (
-              <div className="dropdown-menu">
-                <div onClick={() => { navigate("/settings"); setShowDropdown(false); }}>Account Settings</div>
-                <div onClick={() => { handleLogout(); setShowDropdown(false); }}>Logout</div>
+            <div className="user-profile" ref={profileRef}>
+              <div
+                className="avatar"
+                onClick={() => setShowProfileMenu((s) => !s)}
+              >
+                {userEmail?.[0]?.toUpperCase() || "U"}
               </div>
-            )}
+              {showProfileMenu && (
+                <div className="dropdown-menu">
+                  <div
+                    onClick={() => {
+                      navigate("/settings");
+                      setShowProfileMenu(false);
+                    }}
+                  >
+                    Account Settings
+                  </div>
+                  <div
+                    onClick={() => {
+                      handleLogout();
+                      setShowProfileMenu(false);
+                    }}
+                  >
+                    Logout
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        <h2 className="section-title">Incoming Requests</h2>
+        {/* Status Filter */}
+        <div className="secondary-controls">
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-        {/* Request list */}
-        <div className="request-list">
+        {/* Requests Grid */}
+        <div className="request-grid">
+          {filteredRequests.length === 0 && (
+            <div className="empty-state">No requests found.</div>
+          )}
+
           {filteredRequests.map((req) => (
-            <div className="request-item" key={req.id}>
-              <div className="request-info">
-                <h4>{req.name}</h4>
-                <div className="request-title">{req.title}</div>
-                <p className="request-desc">{req.description}</p>
-                <div className="actions">
-                  {req.status === "Pending" ? (
-                    <>
-                      <span className="pill accept" onClick={() => handleStatusChange(req.id, "Accepted")}>Accept</span>
-                      <span className="pill decline" onClick={() => handleStatusChange(req.id, "Declined")}>Decline</span>
-                    </>
-                  ) : (
-                    <span className={`pill status ${req.status === "Accepted" ? "accept-badge" : "decline-badge"}`} onClick={() => handleStatusChange(req.id, req.status)}>
-                      {req.status}
-                    </span>
-                  )}
-                </div>
+            <div className="request-card" key={req._id}>
+              <div className="card-header">
+                <h3>{req.title}</h3>
+                <Badge variant={req.status}>{req.status}</Badge>
               </div>
-              <div className="request-time">{req.time}</div>
+              <p className="card-desc">{req.description}</p>
+              <button
+                className="view-btn"
+                onClick={() => navigate(`/requests/${req._id}`)}
+              >
+                View
+              </button>
             </div>
           ))}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
-
-export default RequestPage;
