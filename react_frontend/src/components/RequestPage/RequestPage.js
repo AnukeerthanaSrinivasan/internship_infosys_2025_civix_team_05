@@ -1,140 +1,217 @@
 
+// RequestPage.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RequestPage.css";
 
-function MyRequestPage() {
+function RequestPage() {
   const navigate = useNavigate();
-  const [activeNav, setActiveNav] = useState("my-requests");
-  const [user, setUser] = useState({
-    name: "Harshit Rai",
-    email: "harshit23btaml34@gmail.com",
-  });
+  const [activeNav, setActiveNav] = useState("requests");
+  const [activeTab, setActiveTab] = useState("all");
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [badges, setBadges] = useState({
-    feed: 0,
-    tasks: 0,
-    requests: 0,
-    myRequests: 0,
-  });
+  const today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [selectedDate, setSelectedDate] = useState(today);
 
+  const [requests, setRequests] = useState([
+    {
+      id: 1,
+      name: "William Smith",
+      title: "Meeting Tomorrow",
+      description: "Hi, let’s have a meeting tomorrow to discuss the project...",
+      time: "about 1 year ago",
+      unread: true,
+      status: "Pending",
+    },
+    {
+      id: 2,
+      name: "Alice Smith",
+      title: "Re: Project Update",
+      description: "Thank you for the project update. It looks great!...",
+      time: "about 1 year ago",
+      unread: false,
+      status: "Pending",
+    },
+    {
+      id: 3,
+      name: "Bob Johnson",
+      title: "Weekend Plans",
+      description: "Any plans for the weekend? Hiking maybe?",
+      time: "over 1 year ago",
+      unread: true,
+      status: "Pending",
+    },
+  ]);
+
+  // Fetch user info from localStorage
+  const [user, setUser] = useState({ name: "User", email: "email@example.com" });
   useEffect(() => {
-    // later you will fetch these from backend API
-    setBadges({
-      feed: 2,
-      tasks: 0,
-      requests: 5,
-      myRequests: 3,
-    });
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) setUser(storedUser);
   }, []);
 
-  const handleNavClick = (nav) => {
-    setActiveNav(nav);
-    navigate(`/${nav}`);
+  // Accept/Decline toggle
+  const handleStatusChange = (id, newStatus) => {
+    setRequests((prev) =>
+      prev.map((r) =>
+        r.id === id
+          ? {
+              ...r,
+              status: r.status === newStatus ? "Pending" : newStatus,
+              unread: false,
+            }
+          : r
+      )
+    );
+  };
+
+  // Calendar helpers
+  const monthName = new Date(currentYear, currentMonth).toLocaleString("default", { month: "long" });
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+
+  const calendarDays = [];
+  for (let i = 0; i < firstDay; i++) calendarDays.push(null);
+  for (let d = 1; d <= daysInMonth; d++) calendarDays.push(d);
+
+  // Filter requests
+  const filteredRequests = activeTab === "unread" ? requests.filter((r) => r.unread) : requests;
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   return (
-    <div className="request-page">
+    <div className="request-container">
       {/* Sidebar */}
-      <aside className="sidebar">
-        <h2 className="logo">Hire A Helper</h2>
-        <ul>
-          <li
-            className={activeNav === "feed" ? "active" : ""}
-            onClick={() => handleNavClick("feed")}
-          >
-            Feed <span className="count">{badges.feed}</span>
-          </li>
-          <li
-            className={activeNav === "my-tasks" ? "active" : ""}
-            onClick={() => handleNavClick("my-tasks")}
-          >
-            My Tasks <span className="count">{badges.tasks}</span>
-          </li>
-          <li
-            className={activeNav === "requests" ? "active" : ""}
-            onClick={() => handleNavClick("requests")}
-          >
-            Requests <span className="count">{badges.requests}</span>
-          </li>
-          <li
-            className={activeNav === "my-requests" ? "active" : ""}
-            onClick={() => handleNavClick("my-requests")}
-          >
-            My Requests <span className="count">{badges.myRequests}</span>
-          </li>
-          <li
-            className={activeNav === "add-task" ? "active" : ""}
-            onClick={() => handleNavClick("add-task")}
-          >
-            Add Task
-          </li>
-          <li
-            className={activeNav === "settings" ? "active" : ""}
-            onClick={() => handleNavClick("settings")}
-          >
-            Settings
-          </li>
-        </ul>
+      <div className="sidebar">
+        <div className="logo">Hire A Helper</div>
+        <nav className="sidebar-nav">
+          <ul>
+            <li className={activeNav === "feed" ? "active" : ""} onClick={() => { setActiveNav("feed"); navigate("/feed"); }}>
+              Feed
+            </li>
+            <li className={activeNav === "myTasks" ? "active" : ""} onClick={() => { setActiveNav("myTasks"); navigate("/my-tasks"); }}>
+              My Tasks <span className="count">3</span>
+            </li>
+            <li className={activeNav === "requests" ? "active" : ""} onClick={() => { setActiveNav("requests"); navigate("/request"); }}>
+              Requests <span className="count">{requests.length}</span>
+            </li>
+            <li className={activeNav === "myRequests" ? "active" : ""} onClick={() => { setActiveNav("myRequests"); navigate("/my-request"); }}>
+              My Requests <span className="count">1</span>
+            </li>
+            <li className={activeNav === "addTask" ? "active" : ""} onClick={() => { setActiveNav("addTask"); navigate("/add-task"); }}>
+              Add Task
+            </li>
+            <li className={activeNav === "settings" ? "active" : ""} onClick={() => { setActiveNav("settings"); navigate("/settings"); }}>
+              <span>Settings</span>
+            </li>
+          </ul>
+        </nav>
 
         {/* Calendar */}
-        <div className="calendar">
+        <div className="calendar-widget">
           <div className="calendar-header">
-            <button>{"<"}</button>
-            <span>October 2025</span>
-            <button>{">"}</button>
+            <button
+              onClick={() =>
+                currentMonth === 0
+                  ? (setCurrentMonth(11), setCurrentYear(currentYear - 1))
+                  : setCurrentMonth(currentMonth - 1)
+              }
+            >
+              &lt;
+            </button>
+            <div className="current-month">{monthName} {currentYear}</div>
+            <button
+              onClick={() =>
+                currentMonth === 11
+                  ? (setCurrentMonth(0), setCurrentYear(currentYear + 1))
+                  : setCurrentMonth(currentMonth + 1)
+              }
+            >
+              &gt;
+            </button>
           </div>
-          <div className="calendar-grid">
-            <div className="weekday">Su</div>
-            <div className="weekday">Mo</div>
-            <div className="weekday">Tu</div>
-            <div className="weekday">We</div>
-            <div className="weekday">Th</div>
-            <div className="weekday">Fr</div>
-            <div className="weekday">Sa</div>
-            {/* Example days */}
-            {Array.from({ length: 35 }, (_, i) => (
+          <div className="calendar-days">
+            {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
+              <div key={d} className="weekday">{d}</div>
+            ))}
+            {calendarDays.map((d, i) => (
               <div
                 key={i}
-                className={`day ${i === 5 ? "active-day" : ""}`}
+                className={`day ${d && d === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() ? "selected" : ""}`}
+                onClick={() => d && setSelectedDate(new Date(currentYear, currentMonth, d))}
               >
-                {i + 1 <= 31 ? i + 1 : ""}
+                {d || ""}
               </div>
             ))}
           </div>
         </div>
-      </aside>
+      </div>
 
-      {/* Main Content */}
-      <main className="main-content">
-        <div className="topbar">
-          <input type="text" placeholder="Search tasks..." />
-          <div
-            className="user-badge"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          >
-            <div className="avatar">{user.name.charAt(0)}</div>
-            <div className="user-info">
-              <span className="user-name">{user.name}</span>
-              <span className="user-email">{user.email}</span>
-            </div>
+      {/* Main content */}
+      <div className="main-content">
+        <div className="top-bar">
+          <form className="search-bar">
+            <input type="text" placeholder="Search requests..." />
+          </form>
+
+          <div className="tabs">
+            <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
+            <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Unread</button>
           </div>
-          {dropdownOpen && (
-            <div className="dropdown">
-              <div onClick={() => navigate("/settings")}>Account Settings</div>
-              <div onClick={() => navigate("/logout")}>Logout</div>
+
+          {/* User Profile */}
+          <div className="user-profile" onClick={() => setShowDropdown(!showDropdown)}>
+            <div className="avatar">{user?.name?.[0]?.toUpperCase() || "U"}</div>
+            <div>
+              <div className="username">{user?.name || "User"}</div>
+              <div className="email">{user?.email || "email@example.com"}</div>
             </div>
-          )}
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <div onClick={() => { navigate("/settings"); setShowDropdown(false); }}>Account Settings</div>
+                <div onClick={() => { handleLogout(); setShowDropdown(false); }}>Logout</div>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="content">
-          <p>No requests found. Create your first request!</p>
+        <h2 className="section-title">Incoming Requests</h2>
+
+        {/* Request list */}
+        <div className="request-list">
+          {filteredRequests.map((req) => (
+            <div className="request-item" key={req.id}>
+              <div className="request-info">
+                <h4>{req.name}</h4>
+                <div className="request-title">{req.title}</div>
+                <p className="request-desc">{req.description}</p>
+                <div className="actions">
+                  {req.status === "Pending" ? (
+                    <>
+                      <span className="pill accept" onClick={() => handleStatusChange(req.id, "Accepted")}>Accept</span>
+                      <span className="pill decline" onClick={() => handleStatusChange(req.id, "Declined")}>Decline</span>
+                    </>
+                  ) : (
+                    <span className={`pill status ${req.status === "Accepted" ? "accept-badge" : "decline-badge"}`} onClick={() => handleStatusChange(req.id, req.status)}>
+                      {req.status}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="request-time">{req.time}</div>
+            </div>
+          ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 }
 
-export default MyRequestPage;
+export default RequestPage;
 
