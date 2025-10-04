@@ -162,11 +162,14 @@ const MyTaskPage = () => {
       {/* Main Content */}
       <div className="main-content">
         <div className="header1">
-          <form className="search-bar2" onSubmit={handleSearchSubmit}>
-            <button type="submit" className="search-icon2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <form className="search-bar1" onSubmit={handleSearchSubmit}>
+            <button type="submit" className="search-icon1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
             </button>
-            <input type="text" placeholder="Search tasks..." value={searchQuery} onChange={handleSearchChange}/>
+            <input type="text" placeholder="Search tasks..." value={searchQuery} onChange={handleSearchChange} />
           </form>
           <div className="user-profile" ref={profileRef}>
             <div className="profile-container" onClick={()=>setShowProfileMenu(!showProfileMenu)}>
@@ -211,10 +214,23 @@ const MyTaskPage = () => {
                   <p className="task-description">{task.description}</p>
                   <div className="task-details">
                     <p className="task-location">
-                      <i className="location-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></i> {task.location}
+                      <i className="location-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                          <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                      </i> 
+                      {task.location}
                     </p>
                     <p className="task-dates">
-                      <i className="calendar-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></i>
+                      <i className="calendar-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                      </i>
                       <span>{task.startDate} • 2:00 PM - {task.endDate}</span>
                     </p>
                   </div>

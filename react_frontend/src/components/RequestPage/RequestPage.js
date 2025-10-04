@@ -73,26 +73,61 @@ function RequestPage() {
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   // Accept request
-  const handleAccept = async (req) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post(
-        "http://localhost:5000/api/myrequest/accept",
-        {
-          taskId: req.task._id,
-          requestId: req._id,
-          description: req.description,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  // Accept request
+const handleAccept = async (reqItem) => {
+  try {
+    const token = localStorage.getItem("token");
+    console.log("Sending accept request:", {
+  taskId: reqItem.task?._id,
+  requester: reqItem.requester?._id || reqItem.requester,
+  description: reqItem.description
+});
 
-      setRequests(prev =>
-        prev.map(r => r._id === req._id ? { ...r, status: "accepted" } : r)
-      );
-    } catch (err) {
-      console.error("Error accepting request:", err);
-    }
-  };
+    const res = await axios.post(
+      "http://localhost:5000/api/myrequest/accept",
+      {
+        taskId: reqItem.task,
+        requester: reqItem.requester._id || reqItem.requester,
+        description: reqItem.description
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // Update local state
+    setRequests(prev =>
+      prev.map(r =>
+        r._id === reqItem._id ? { ...r, status: "accepted" } : r
+      )
+    );
+  } catch (err) {
+    console.error("Error accepting request:", err.response?.data || err.message);
+  }
+};
+
+// Reject request
+const handleReject = async (reqItem) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.post(
+      "http://localhost:5000/api/myrequest/reject",
+      {
+        taskId: reqItem.task,
+        requester: reqItem.requester._id || reqItem.requester,
+        description: reqItem.description
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // Update local state
+    setRequests(prev =>
+      prev.map(r => r._id === reqItem._id ? { ...r, status: "rejected" } : r)
+    );
+
+  } catch (err) {
+    console.error("Error rejecting request:", err.response?.data || err.message);
+  }
+};
+
   // Calendar logic
     const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
     const [currentYear, setCurrentYear] = useState(selectedDate.getFullYear());
@@ -254,7 +289,7 @@ const markAsRead = async (notificationId) => {
           {/* User info */}
           <div className="user-profile" ref={profileRef}>
             <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
-              <div className="user-avatar"><img src="https://ui-avatars.com/api/?name=S&background=6c5ce7&color=fff" alt="User" /></div>
+              <div className="user-avatar"><img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" /></div>
               <div className="user-info">
                 <div className="user-name">{userEmail.split('@')[0]}</div>
                 <div className="user-email">{userEmail}</div>
@@ -298,20 +333,21 @@ const markAsRead = async (notificationId) => {
             filteredRequests.map((req) => (
               <div className="request-item" key={req._id}>
                 <div className="request-info">
-                  <h4>Requester: {req.requester?.name || req.requester}</h4>
+                  <h4>Requester: {req.requester?.firstName }</h4>
                   <div className="request-title">Task: {req.task?.title || req.task}</div>
                   <p className="request-desc">{req.description}</p>
                   <div className="actions">
                     {req.status === "pending" ? (
-                      <>
-                        <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
-                        <button onClick={() => handleDecline(req._id)} className="pill decline">Decline</button>
-                      </>
-                    ) : (
-                      <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
-                        {req.status}
-                      </span>
-                    )}
+  <>
+    <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
+    <button onClick={() => handleReject(req)} className="pill decline">Decline</button>
+  </>
+) : (
+  <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
+    {req.status}
+  </span>
+)}
+
                   </div>
                 </div>
                 <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>

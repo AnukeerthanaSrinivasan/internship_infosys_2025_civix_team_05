@@ -39,37 +39,26 @@ export default function MyRequestPage() {
 
   // ---------- Fetch requests ----------
   useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem('token');
+  const fetchRequests = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
 
-        // ✅ Use the correct endpoint from your backend
-        const res = await axios.get('http://localhost:5000/api/myrequest/myrequesttasks', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      const res = await axios.get('http://localhost:5000/api/myrequest/myrequesttasks', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        /*
-           Backend sends:
-           {
-             myRequests: [...],
-             tasks: [...]
-           }
-        */
-        const combined = [
-          ...(res.data.myRequests || []),
-          ...(res.data.tasks || [])
-        ];
-        setRequests(combined);  // ✅ store a single array if you want to show all together
-      } catch (err) {
-        console.error(err);
-        setError('Failed to load your requests.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRequests();
-  }, []);
+      setRequests(res.data || []);   // ✅ backend already sends array with status
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load your requests.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchRequests();
+}, []);
+
 
   // ---------- Close profile dropdown ----------
   useEffect(() => {
@@ -212,7 +201,7 @@ useEffect(() => {
 
             <div className="profile" ref={profileRef}>
               <div className="profile-trigger" onClick={() => setShowProfileMenu(s => !s)}>
-                <img className="avatar" src="https://ui-avatars.com/api/?name=R&background=6c5ce7&color=fff" alt="user"/>
+                <img className="avatar" src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="user"/>
                 <div className="profile-text">
                   <div className="user-info">
                 <div className="user-name">{userEmail.split('@')[0]}</div>

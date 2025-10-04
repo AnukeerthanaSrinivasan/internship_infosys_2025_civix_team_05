@@ -176,32 +176,33 @@
 
 /* Search Bar */
 .search-bar2 {
-  flex: 1;
-  max-width: 400px;
-  position: relative;
   display: flex;
-  align-items: center;
+  align-items: center;   /* centers icon + input vertically */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 10px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-icon2222 {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;   /* ensures icon is centered */
+  justify-content: center;
+  margin-right: 6px;
+  color: #666;
 }
 
 .search-bar2 input {
-  width: 100%;
-  padding: 8px 12px 8px 32px;
-  border: 1px solid #e1e1e1;
-  border-radius: 4px;
-  font-size: 14px;
-  outline: none;
-}
-
-.search-bar2 .search-icon2 {
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
   border: none;
-  padding: 0;
-  cursor: pointer;
-  color: #666;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  padding: 6px 0;
 }
 
 /* User Profile */
@@ -377,6 +378,19 @@
   align-items: center;
   justify-content: center;
   color: #666;
+}
+.task-dates {
+  display: flex;
+  align-items: center;  /* aligns icon with text */
+  gap: 6px;             /* spacing between icon and text */
+  font-size: 13px;
+  color: #444;
+}
+
+.calendar-icon {
+  display: flex;
+  align-items: center;   /* centers the SVG */
+  justify-content: center;
 }
 
 .task-dates span {

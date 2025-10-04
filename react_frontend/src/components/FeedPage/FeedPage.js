@@ -8,15 +8,27 @@ const FeedPage = () => {
   const [tasks, setTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [activeNav, setActiveNav] = useState('feed');
+  const [userRequests, setUserRequests] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [loadingRequests, setLoadingRequests] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showRequestModal, setShowRequestModal] = useState(false);
+const [selectedTaskForRequest, setSelectedTaskForRequest] = useState(null);
+const [requestDescription, setRequestDescription] = useState('');
 
   const navigate = useNavigate();
   const profileRef = useRef(null);
 
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
   // Click outside profile dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -27,6 +39,31 @@ const FeedPage = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+
+  useEffect(() => {
+  const fetchUserRequests = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await axios.get("http://localhost:5000/api/requests/myrequesttasks", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Store requests with taskId + status
+      const requestsMap = {};
+      res.data.forEach(req => {
+        requestsMap[req.task] = req.status; // map taskId -> status
+      });
+      setUserRequests(requestsMap);
+    } catch (err) {
+      console.error("Error fetching user requests", err);
+    }
+  };
+
+  fetchUserRequests();
+}, []);
 
   // Fetch tasks from backend
   useEffect(() => {
@@ -74,6 +111,7 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
           'Content-Type': 'application/json' // explicitly set
         }
       }
+   
     );
     const notification=await axios.post(
       'http://localhost:5000/api/notification/add',
@@ -93,8 +131,12 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
     console.log(notification.data);
     console.log(response.data);
   } catch (err) {
+    if (err.response?.status === 400 && err.response?.data?.error) {
+      alert(err.response.data.error); // 👉 "Request already exists..."
+    } else {
+      alert("Failed to send request");
+    }
     console.error(err.response?.data || err.message);
-    alert(err.response?.data || 'Failed to send request');
   } finally {
     setLoadingRequests(prev => ({ ...prev, [taskId]: false }));
   }
@@ -213,7 +255,7 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
           </form>
           <div className="user-profile" ref={profileRef}>
             <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
-              <div className="user-avatar"><img src="https://ui-avatars.com/api/?name=S&background=6c5ce7&color=fff" alt="User" /></div>
+              <div className="user-avatar"><img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" /></div>
               <div className="user-info">
                 <div className="user-name">{userEmail.split('@')[0]}</div>
                 <div className="user-email">{userEmail}</div>
@@ -277,13 +319,16 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
                         {formatDate(task.startTime)} • {formatTime(task.startTime)} - {formatTime(task.endTime)}
                       </p>
                     </div>
-                    <button 
+                    
+                 
+                  <button 
                       className="request-button" 
                       onClick={() => handleRequest(task._id,task.description,task.userId, task.title)} 
                       disabled={loadingRequests[task._id]}
                     >
                       {loadingRequests[task._id] ? 'Sending...' : 'Request'}
                     </button>
+
                   </div>
                 </div>
               ))
@@ -292,6 +337,40 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
             )}
           </div>
         </div>
+        {showRequestModal && selectedTaskForRequest && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <h3>Request Task: {selectedTaskForRequest.title}</h3>
+      <textarea
+        value={requestDescription}
+        onChange={(e) => setRequestDescription(e.target.value)}
+        placeholder="Enter a description for your request"
+        rows={4}
+        style={{ width: '100%' }}
+      ></textarea>
+      <div className="modal-buttons">
+        <button
+          onClick={() => {
+            handleRequest(
+              selectedTaskForRequest._id,
+              requestDescription,
+              selectedTaskForRequest.userId,
+              selectedTaskForRequest.title
+            );
+            setShowRequestModal(false);
+          }}
+          className="submit-button"
+        >
+          Submit
+        </button>
+        <button onClick={() => setShowRequestModal(false)} className="cancel-button">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
     </div>
   );
