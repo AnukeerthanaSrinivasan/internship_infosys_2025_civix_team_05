@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './MyRequestPage.css';
+import CalendarWidget from '../ui/CalendarWidget';
 
 // ---------------- Badge -----------------
 const Badge = ({ variant = 'default', children }) => {
@@ -71,19 +72,7 @@ export default function MyRequestPage() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // ---------- Calendar helpers ----------
-  const generateCalendarDays = () => {
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
-    const days = [];
-    for (let i = firstDay - 1; i >= 0; i--) days.push({ day: daysInPrev - i, cur: false });
-    for (let i = 1; i <= daysInMonth; i++)
-      days.push({ day: i, cur: true, selected: i === selectedDate.getDate() });
-    while (days.length < 42)
-      days.push({ day: days.length - (firstDay + daysInMonth) + 1, cur: false });
-    return days;
-  };
+  // Calendar handled by CalendarWidget (state persisted)
 const [userEmail, setUserEmail] = useState('');
 useEffect(() => {
   const email = localStorage.getItem('email');
@@ -159,25 +148,7 @@ useEffect(() => {
         </nav>
 
         {/* Calendar */}
-        <div className="calendar-widget">
-          <div className="calendar-header">
-            <button className="prev-month" onClick={handlePrevMonth}>&lt;</button>
-            <div className="current-month">{monthName} {currentYear}</div>
-            <button className="next-month" onClick={handleNextMonth}>&gt;</button>
-          </div>
-          <div className="calendar-days">
-            {['Su','Mo','Tu','We','Th','Fr','Sa'].map((d,i)=><div key={i} className="weekday">{d}</div>)}
-            {generateCalendarDays().map((day,index)=>(
-              <div
-                key={index}
-                className={`day ${!day.cur ? 'prev-month' : ''} ${day.selected ? 'selected' : ''}`}
-                onClick={() => handleDateSelect(day)}
-              >
-                {day.day}
-              </div>
-            ))}
-          </div>
-        </div>
+        <CalendarWidget storageKey="calendar-widget" />
       </div>
 
       {/* Main content */}

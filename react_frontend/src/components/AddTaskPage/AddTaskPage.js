@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AddTaskPage.css';
 import '../ui/button.css';
+import CalendarWidget from '../ui/CalendarWidget';
 
 const AddTaskPage = () => {
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ const AddTaskPage = () => {
             <li onClick={() => navigate('/settings')}>Settings</li>
           </ul>
         </nav>
+        <CalendarWidget storageKey="calendar-widget" />
       </div>
 
       {/* Main Content */}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './MyTaskPage.css';
 import { Badge } from '../ui/button';
 import '../ui/button.css';
+import CalendarWidget from '../ui/CalendarWidget';
 
 const MyTaskPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -103,28 +104,7 @@ const MyTaskPage = () => {
     task.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Calendar functionality
-  const monthName = new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' });
-  const generateCalendarDays = () => {
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
-    const days = [];
-    for (let i = firstDay - 1; i >= 0; i--) days.push({ day: daysInPrevMonth - i, currentMonth: false, selected: false });
-    for (let i = 1; i <= daysInMonth; i++) days.push({ day: i, currentMonth: true, selected: i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear() });
-    for (let i = 1; days.length < 42; i++) days.push({ day: i, currentMonth: false, selected: false });
-    return days;
-  };
-
-  const handlePrevMonth = () => {
-    setCurrentMonth(prev => prev === 0 ? (setCurrentYear(prevYear => prevYear - 1), 11) : prev - 1);
-  };
-
-  const handleNextMonth = () => {
-    setCurrentMonth(prev => prev === 11 ? (setCurrentYear(prevYear => prevYear + 1), 0) : prev + 1);
-  };
-
-  const handleDateSelect = (day, isCurrentMonth) => { if (isCurrentMonth) setSelectedDate(new Date(currentYear, currentMonth, day)); };
+  // Calendar handled by CalendarWidget (state persisted)
 
   const handleRefreshTasks = () => window.location.reload();
 
@@ -144,19 +124,7 @@ const MyTaskPage = () => {
           </ul>
         </nav>
         {/* Calendar */}
-        <div className="calendar-widget">
-          <div className="calendar-header">
-            <button className="prev-month" onClick={handlePrevMonth}>&lt;</button>
-            <div className="current-month">{monthName} {currentYear}</div>
-            <button className="next-month" onClick={handleNextMonth}>&gt;</button>
-          </div>
-          <div className="calendar-days">
-            {['Su','Mo','Tu','We','Th','Fr','Sa'].map((d,i) => <div key={i} className="weekday">{d}</div>)}
-            {generateCalendarDays().map((day,i) => (
-              <div key={i} className={`day ${!day.currentMonth?'prev-month':''} ${day.selected?'selected':''}`} onClick={()=>handleDateSelect(day.day, day.currentMonth)}>{day.day}</div>
-            ))}
-          </div>
-        </div>
+        <CalendarWidget storageKey="calendar-widget" />
       </div>
 
       {/* Main Content */}

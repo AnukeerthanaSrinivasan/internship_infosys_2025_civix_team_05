@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './FeedPage.css';
 import '../ui/button.css';
+import CalendarWidget from '../ui/CalendarWidget';
 
 const FeedPage = () => {
   const [tasks, setTasks] = useState([]);
@@ -153,27 +154,7 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
     setTasks(filteredTasks);
   };
 
-  // Calendar logic
-  const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
-  const [currentYear, setCurrentYear] = useState(selectedDate.getFullYear());
-  const monthName = new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' });
-
-  const generateCalendarDays = () => {
-    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
-    const days = [];
-
-    for (let i = firstDayOfMonth - 1; i >= 0; i--) days.push({ day: daysInPrevMonth - i, currentMonth: false, selected: false });
-    for (let i = 1; i <= daysInMonth; i++) days.push({ day: i, currentMonth: true, selected: i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear() });
-    for (let i = 1; i <= 42 - days.length; i++) days.push({ day: i, currentMonth: false, selected: false });
-
-    return days;
-  };
-
-  const handlePrevMonth = () => setCurrentMonth(prev => prev === 0 ? (setCurrentYear(y => y - 1), 11) : prev - 1);
-  const handleNextMonth = () => setCurrentMonth(prev => prev === 11 ? (setCurrentYear(y => y + 1), 0) : prev + 1);
-  const handleDateSelect = (day, isCurrentMonth) => { if (isCurrentMonth) setSelectedDate(new Date(currentYear, currentMonth, day)); };
+  // Calendar handled by CalendarWidget (state persisted)
 
   // Format date and time
   const formatDate = (dateString) => {
@@ -225,19 +206,7 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
         </nav>
 
         {/* Calendar */}
-        <div className="calendar-widget">
-          <div className="calendar-header">
-            <button className="prev-month" onClick={handlePrevMonth}>&lt;</button>
-            <div className="current-month">{monthName} {currentYear}</div>
-            <button className="next-month" onClick={handleNextMonth}>&gt;</button>
-          </div>
-          <div className="calendar-days">
-            {['Su','Mo','Tu','We','Th','Fr','Sa'].map((d, i) => <div key={i} className="weekday">{d}</div>)}
-            {generateCalendarDays().map((day, index) => (
-              <div key={index} className={`day ${!day.currentMonth ? 'prev-month' : ''} ${day.selected ? 'selected' : ''}`} onClick={() => handleDateSelect(day.day, day.currentMonth)}>{day.day}</div>
-            ))}
-          </div>
-        </div>
+        <CalendarWidget storageKey="calendar-widget" />
       </div>
 
       {/* Main Content */}
