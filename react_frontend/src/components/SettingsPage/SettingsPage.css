@@ -1,3 +1,4 @@
+
 /* Container */
 .settings-container {
   display: flex;
@@ -9,8 +10,8 @@
 
 /* Sidebar */
 .sidebar {
-  width: 260px; /* match request page */
-  min-height: 100vh; /* full height */
+  width: 260px;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -24,8 +25,9 @@
   margin-bottom: 20px;
 }
 
-/* Sidebar navigation */
-.sidebar-nav ul {
+/* Sidebar nav */
+.sidebar-nav ul,
+.sidebar-nav {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -40,30 +42,21 @@
   display: flex;
   justify-content: space-between;
   transition: 0.2s;
-  color: #111827; /* default text */
-  background-color: transparent; /* default background */
+  color: #111827;
+  background-color: transparent;
 }
 
-/* Active / Selected item */
 .sidebar-nav li.active {
-  background-color: #111827; /* black background */
-  color: #fff; /* white text */
+  background-color: #111827;
+  color: #fff;
 }
 
-/* Hover only for non-active items */
 .sidebar-nav li:not(.active):hover {
-  background-color: #111827; /* black on hover */
-  color: #fff; /* white text */
+  background-color: #111827;
+  color: #fff;
 }
 
-.count {
-  font-size: 12px;
-  background: #e5e7eb;
-  padding: 2px 6px;
-  border-radius: 12px;
-}
-
-/* Calendar at bottom */
+/* Calendar */
 .calendar-widget {
   margin-top: auto;
 }
@@ -81,10 +74,6 @@
   border: none;
   cursor: pointer;
   font-size: 16px;
-}
-
-.current-month {
-  font-weight: 600;
 }
 
 .calendar-days {
@@ -114,32 +103,33 @@
   color: #fff;
 }
 
-/* Main Content (Settings) */
+/* Main Content */
 .settings-main {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center; /* center content horizontally */
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: flex-start;
   padding: 40px 20px;
   box-sizing: border-box;
-  min-width: 300px;
-  max-width: 700px; /* restrict width */
-  width: 100%;
   background: #f7f7f7;
 }
 
-/* Headings */
-.settings-main h2 {
+.settings-content {
+  width: 100%;
+  max-width: 700px;
+}
+
+/* Heading */
+.settings-content h2 {
   margin-bottom: 8px;
-  font-size: 18px; /* match request page section-title */
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
 }
 
 .settings-desc {
   margin-bottom: 20px;
-  color: #6b7280; /* match request page description */
+  color: #6b7280;
   font-size: 14px;
   text-align: center;
 }
@@ -147,16 +137,15 @@
 /* Profile Picture */
 .profile-pic-block {
   display: flex;
+  flex-direction: column;
   align-items: center;
   margin-bottom: 20px;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center; /* center horizontally */
+  gap: 12px;
 }
 
 .profile-pic-container {
-  width: 70px;
-  height: 70px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   background: #d1d5db;
   overflow: hidden;
@@ -172,38 +161,21 @@
 }
 
 .profile-avatar {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: #6b7280;
 }
 
-/* Profile action buttons */
 .profile-pic-actions {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   justify-content: center;
-}
-
-.profile-pic-actions button {
-  padding: 4px 10px;
-  border-radius: 16px;
-  font-size: 13px;
-  border: none;
-  cursor: pointer;
-  background: #f3f4f6;
-  color: #374151;
-  transition: 0.2s;
-}
-
-.profile-pic-actions button:hover {
-  background: #111827;
-  color: #fff;
 }
 
 /* Form */
 .settings-form {
   width: 100%;
   max-width: 600px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -227,12 +199,11 @@
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   width: 100%;
-  box-sizing: border-box;
   font-size: 14px;
   color: #111827;
 }
 
-/* Form action buttons as pills */
+/* Buttons */
 .form-actions {
   display: flex;
   gap: 12px;
@@ -241,7 +212,7 @@
 }
 
 .btn-primary {
-  background: #111827; /* dark pill like accept */
+  background: #111827;
   color: #fff;
   border: none;
   padding: 6px 12px;
@@ -258,7 +229,7 @@
 }
 
 .btn-secondary {
-  background: #f3f4f6; /* light pill like decline */
+  background: #f3f4f6;
   color: #374151;
   border: none;
   padding: 6px 12px;
@@ -274,7 +245,7 @@
   background: #e5e7eb;
 }
 
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
@@ -297,3 +268,4 @@
     flex-direction: column;
   }
 }
+
