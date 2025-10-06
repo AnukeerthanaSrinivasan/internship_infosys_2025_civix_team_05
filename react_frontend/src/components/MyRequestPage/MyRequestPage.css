@@ -125,9 +125,17 @@
 /* ---------- MAIN ---------- */
 .main-content112 {
   flex: 1;
-  padding: 18px 24px;
+  padding: 0;                 /* Header flush to edges like Feed/MyTasks */
   background: #f7f7f8;
   overflow-y: auto;
+}
+
+/* Content container for proper centering */
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  width: 100%;
 }
 
 /* header */
@@ -201,14 +209,38 @@
   margin-bottom:16px;
 }
 .left-controls { display:flex; gap:12px; align-items:center; }
-.filter-group { display:flex; flex-direction:column; gap:6px; }
-.filter-group label { font-size:12px; color:#666; }
-.filter-options select {
-  padding:8px 10px;
-  border-radius:8px;
-  border:1px solid #e7e7e7;
-  background:#fff;
-  font-size:14px;
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 16px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.filter-group select {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.filter-group select:hover {
+  border-color: #bbb;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #6c5ce7;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.1);
 }
 
 /* right controls */
@@ -268,10 +300,10 @@
 .request-table { background:#fff; border-radius:10px; padding:6px; box-shadow: 0 6px 18px rgba(11,22,40,0.04); }
 .table-head, .table-row {
   display:grid;
-  grid-template-columns: 140px 1fr 140px 100px 140px;
+  grid-template-columns: 160px 1fr 140px 120px; /* ID, Title, Status, Priority/Actions */
   gap:12px;
-  align-items:center;
-  padding:10px 12px;
+  align-items:start;
+  padding:12px 14px;
   border-bottom:1px solid #f4f4f4;
 }
 .table-head { font-weight:700; font-size:13px; color:#666; background:#fafafa; border-bottom:1px solid #eee; }
@@ -290,26 +322,27 @@
 }
 .small-btn.alt { background:#fff7f6; border-color:#ffd6d6; color:#d23; }
 
-/* ---------- BADGE ---------- */
+/* badges */
 .badge {
-  padding:6px 10px;
-  font-size:12px;
-  border-radius:999px;
-  display:inline-block;
-  font-weight:600;
-  text-transform: none;
-  background: #f3f4f6; /* fallback */
-  color: #222;
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
 }
-
-/* Status variants (normalized classes like in-progress) */
-.badge.in-progress { background:#fff3cd; color:#7a5a00; }
-.badge.backlog { background:#f5f5f5; color:#606060; }
-.badge.todo { background:#e8f5ff; color:#0b69ff; }
-.badge.done { background:#e6ffed; color:#0b7a3a; }
-.badge.canceled { background:#fff0f0; color:#c22; }
-.badge.approved { background:#e6fffa; color:#067a66; }
-.badge.pending { background:#fff7e6; color:#7a5a00; }
+.badge.pending { background: #FFF4E5; color: #E67E22; border: 1px solid rgba(230, 126, 34, 0.2); }
+.badge.accepted { background: #E7F9ED; color: #27AE60; border: 1px solid rgba(39, 174, 96, 0.2); }
+.badge.rejected { background: #FEECEC; color: #E74C3C; border: 1px solid rgba(231, 76, 60, 0.2); }
+.badge.default { background: #EEE; color: #555; border: 1px solid rgba(85, 85, 85, 0.1); }
+.badge.in-progress { background:#fff3cd; color:#7a5a00; border: 1px solid rgba(122, 90, 0, 0.2); }
+.badge.backlog { background:#f5f5f5; color:#606060; border: 1px solid rgba(96, 96, 96, 0.2); }
+.badge.todo { background:#e8f5ff; color:#0b69ff; border: 1px solid rgba(11, 105, 255, 0.2); }
+.badge.done { background:#e6ffed; color:#0b7a3a; border: 1px solid rgba(11, 122, 58, 0.2); }
+.badge.canceled { background:#fff0f0; color:#c22; border: 1px solid rgba(204, 34, 34, 0.2); }
+.badge.approved { background:#e6fffa; color:#067a66; border: 1px solid rgba(6, 122, 102, 0.2); }
 
 /* Priority tag example (if you want to style priority tags later) */
 .badge.low { background:#eef8ff; color:#0366d6; }

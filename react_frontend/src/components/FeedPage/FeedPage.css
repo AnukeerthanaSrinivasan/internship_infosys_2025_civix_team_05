@@ -10,13 +10,12 @@
 .main-content {
   flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   background: #f8f9fa;
-
-  /* 👇 critical for scrolling */
+  /* Scroll container for sticky header */
   overflow-y: auto;
-  max-height: 100vh;       /* limit height to viewport */
-  padding: 40px;
+  max-height: 100vh;
+  padding: 0; /* header should touch edges */
   box-sizing: border-box;
 }
 

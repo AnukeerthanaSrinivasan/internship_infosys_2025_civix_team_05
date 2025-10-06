@@ -1,0 +1,58 @@
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb; /* subtle divider like screenshot */
+}
+
+.top-header .header-search {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 360px; /* narrow like screenshot */
+  gap: 8px;
+}
+
+.top-header .header-search input[type="text"],
+.top-header .header-search input[type="search"] {
+  flex: 1;
+  height: 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0 12px;
+  outline: none;
+  background: #ffffff;
+}
+
+.top-header .header-search button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Ensure profile area stays aligned on the right */
+.top-header .user-profile,
+.top-header .profile {
+  margin-left: auto;
+}
+
+/* Ensure content that follows doesn't sit under the sticky header */
+.main-content,
+.main-content123,
+.main-content112 {
+  padding-top: 0;
+}
+
+

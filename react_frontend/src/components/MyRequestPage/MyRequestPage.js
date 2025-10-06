@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './MyRequestPage.css';
 import CalendarWidget from '../ui/CalendarWidget';
+import '../ui/header.css';
 
 // ---------------- Badge -----------------
 const Badge = ({ variant = 'default', children }) => {
@@ -153,64 +154,65 @@ useEffect(() => {
 
       {/* Main content */}
       <main className="main-content112">
-        <header className="page-header">
-          <div className="title-block">
-            <h1>My Requests</h1>
-            <p className="subtitle">Track the requests you have sent.</p>
-          </div>
+        {/* Header - Search + Account only */}
+        <div className="top-header">
+          <form className="header-search" onSubmit={e => e.preventDefault()}>
+            <button className="icon-btn" type="submit" aria-label="search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </form>
 
-          <div className="controls">
-            <form className="search-form" onSubmit={e => e.preventDefault()}>
-              <button className="icon-btn" type="submit" aria-label="search">🔍</button>
-              <input
-                type="text"
-                placeholder="Search requests..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-              />
-            </form>
-
-            <div className="profile" ref={profileRef}>
-              <div className="profile-trigger" onClick={() => setShowProfileMenu(s => !s)}>
-                <img className="avatar" src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="user"/>
-                <div className="profile-text">
-                  <div className="user-info">
-                <div className="user-name">{userEmail.split('@')[0]}</div>
-                <div className="user-email">{userEmail}</div>
-
-              </div>
+          <div className="profile" ref={profileRef}>
+            <div className="profile-trigger" onClick={() => setShowProfileMenu(s => !s)}>
+              <img className="avatar" src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="user"/>
+              <div className="profile-text">
+                <div className="user-info">
+                  <div className="user-name">{userEmail.split('@')[0]}</div>
+                  <div className="user-email">{userEmail}</div>
                 </div>
               </div>
-              {showProfileMenu && (
+            </div>
+            {showProfileMenu && (
               <div className="profile-dropdown">
                 <ul>
-                 
+                  <li onClick={() => { navigate('/settings'); setShowProfileMenu(false); }}>
+                    Account Settings
+                  </li>
                   <li onClick={() => {
-        navigate('/settings');
-        setShowProfileMenu(false); // close dropdown after navigation
-      }}>
-        Account Settings
-      </li>
-                 
-                  <li onClick={() => {
-  const confirmLogout = window.confirm("Are you sure you want to logout?");
-  if (confirmLogout) {
-    localStorage.removeItem('token');
-    navigate('/login');
-  }
-}}>
-  Logout
-</li>
-
+                    const confirmLogout = window.confirm("Are you sure you want to logout?");
+                    if (confirmLogout) {
+                      localStorage.removeItem('token');
+                      navigate('/login');
+                    }
+                  }}>
+                    Logout
+                  </li>
                 </ul>
               </div>
             )}
-            </div>
           </div>
-        </header>
+        </div>
 
-        {/* Filters */}
-        <div className="secondary-controls">
+        <div className="content-container">
+          {/* Move title/controls below */}
+          <header className="page-header">
+            <div className="title-block">
+              <h1>My Requests</h1>
+              <p className="subtitle">Track the requests you have sent.</p>
+            </div>
+          </header>
+
+          {/* Filters */}
+          <div className="secondary-controls">
           <div className="left-controls">
             <div className="filter-group">
               <label>Status</label>
@@ -279,6 +281,7 @@ useEffect(() => {
             </div>
           )}
         </section>
+        </div>
       </main>
     </div>
   );

@@ -4,6 +4,7 @@ import './MyTaskPage.css';
 import { Badge } from '../ui/button';
 import '../ui/button.css';
 import CalendarWidget from '../ui/CalendarWidget';
+import '../ui/header.css';
 
 const MyTaskPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -129,15 +130,16 @@ const MyTaskPage = () => {
 
       {/* Main Content */}
       <div className="main-content">
-        <div className="header1">
-          <form className="search-bar1" onSubmit={handleSearchSubmit}>
-            <button type="submit" className="search-icon1">
+        {/* Header - Search + Account only */}
+        <div className="top-header">
+          <form className="header-search" onSubmit={handleSearchSubmit}>
+            <button type="submit">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
-            <input type="text" placeholder="Search tasks..." value={searchQuery} onChange={handleSearchChange} />
+            <input type="text" placeholder="Search products..." value={searchQuery} onChange={handleSearchChange} />
           </form>
           <div className="user-profile" ref={profileRef}>
             <div className="profile-container" onClick={()=>setShowProfileMenu(!showProfileMenu)}>

@@ -40,6 +40,10 @@ const AddTaskPage = () => {
 
       const data = await res.json();
       if (res.ok) {
+        try {
+          localStorage.setItem('lastAddedTask', JSON.stringify(data));
+          localStorage.setItem('lastAddedTaskAt', String(Date.now()));
+        } catch (e) {}
         alert('Task added successfully!');
         navigate('/feed'); // Redirect to feed page
       } else {

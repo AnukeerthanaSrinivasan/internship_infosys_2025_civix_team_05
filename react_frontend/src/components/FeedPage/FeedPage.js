@@ -4,6 +4,7 @@ import axios from 'axios';
 import './FeedPage.css';
 import '../ui/button.css';
 import CalendarWidget from '../ui/CalendarWidget';
+import '../ui/header.css';
 
 const FeedPage = () => {
   const [tasks, setTasks] = useState([]);
@@ -76,6 +77,18 @@ const [requestDescription, setRequestDescription] = useState('');
           headers: { Authorization: `Bearer ${token}` }
         });
         setTasks(res.data);
+        // If a task was just added, optimistically prepend if not present
+        try {
+          const last = JSON.parse(localStorage.getItem('lastAddedTask') || 'null');
+          const ts = localStorage.getItem('lastAddedTaskAt');
+          if (last && (!res.data || !res.data.find(t => t._id === (last._id || last.id)))) {
+            setTasks(prev => [last, ...prev]);
+          }
+          if (ts && Date.now() - Number(ts) > 60000) {
+            localStorage.removeItem('lastAddedTask');
+            localStorage.removeItem('lastAddedTaskAt');
+          }
+        } catch (_) {}
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -211,16 +224,16 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Header - Fixed at top */}
-        <div className="header">
-          <form className="search-bar1" onSubmit={handleSearchSubmit}>
-            <button type="submit" className="search-icon1">
+        {/* Header - Search + Account only */}
+        <div className="top-header">
+          <form className="header-search" onSubmit={handleSearchSubmit}>
+            <button type="submit">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
-            <input type="text" placeholder="Search tasks..." value={searchQuery} onChange={handleSearchChange} />
+            <input type="text" placeholder="Search products..." value={searchQuery} onChange={handleSearchChange} />
           </form>
           <div className="user-profile" ref={profileRef}>
             <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>

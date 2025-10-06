@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FaBell } from "react-icons/fa"; 
 import "./RequestPage.css";
+import '../ui/header.css';
 import CalendarWidget from '../ui/CalendarWidget';
 
 function RequestPage() {
@@ -214,48 +215,18 @@ const markAsRead = async (notificationId) => {
 
       {/* Main content */}
       <div className="main-content123">
-        <div className="top-bar123">
-          <form className="search-bar123">
-            <input type="text" placeholder="Search requests..." />
+        {/* Header - Search + Account only */}
+        <div className="top-header">
+          <form className="header-search" onSubmit={(e)=>e.preventDefault()}>
+            <button type="submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+            <input type="text" placeholder="Search products..." />
           </form>
 
-          <div className="tabs">
-            <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
-            <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Pending</button>
-          </div>
-
-          {/* Notification bell */}
-          <div className="notification-container">
-            <FaBell className="notification-icon" onClick={toggleDropdown} />
-            {notifications.filter(n => !n.isRead).length > 0 && (
-              <span className="badge">{notifications.filter(n => !n.isRead).length}</span>
-            )}
-            {showDropdown && (
-  <div className="notification-dropdown">
-    {notifications.filter(n => !n.isRead).length === 0 ? (
-      <p>No notifications</p>
-    ) : (
-      notifications
-        .filter(n => !n.isRead) // only show unread
-        .map(n => (
-          <div key={n._id} className="notification-item unread">
-            <div>{n.message}</div>
-            <button 
-              className="mark-read-btn"
-              onClick={() => markAsRead(n._id)}
-            >
-              Mark as Read
-            </button>
-          </div>
-        ))
-    )}
-  </div>
-)}
-
-
-          </div>
-
-          {/* User info */}
           <div className="user-profile" ref={profileRef}>
             <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
               <div className="user-avatar"><img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" /></div>
@@ -292,37 +263,72 @@ const markAsRead = async (notificationId) => {
           </div>
         </div>
 
-        <h2 className="section-title">Incoming Requests</h2>
+        {/* Move other header elements below */}
+        <div className="top-bar123">
+          <div className="tabs">
+            <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
+            <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Pending</button>
+          </div>
 
-        {/* Request list */}
-        <div className="request-list">
-          {filteredRequests.length === 0 ? (
-            <p>No requests found.</p>
-          ) : (
-            filteredRequests.map((req) => (
-              <div className="request-item" key={req._id}>
-                <div className="request-info">
-                  <h4>Requester: {req.requester?.firstName }</h4>
-                  <div className="request-title">Task: {req.task?.title || req.task}</div>
-                  <p className="request-desc">{req.description}</p>
-                  <div className="actions">
-                    {req.status === "pending" ? (
-  <>
-    <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
-    <button onClick={() => handleReject(req)} className="pill decline">Decline</button>
-  </>
-) : (
-  <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
-    {req.status}
-  </span>
-)}
-
-                  </div>
-                </div>
-                <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>
+          <div className="notification-container">
+            <FaBell className="notification-icon" onClick={toggleDropdown} />
+            {notifications.filter(n => !n.isRead).length > 0 && (
+              <span className="badge">{notifications.filter(n => !n.isRead).length}</span>
+            )}
+            {showDropdown && (
+              <div className="notification-dropdown">
+                {notifications.filter(n => !n.isRead).length === 0 ? (
+                  <p>No notifications</p>
+                ) : (
+                  notifications
+                    .filter(n => !n.isRead)
+                    .map(n => (
+                      <div key={n._id} className="notification-item unread">
+                        <div>{n.message}</div>
+                        <button className="mark-read-btn" onClick={() => markAsRead(n._id)}>
+                          Mark as Read
+                        </button>
+                      </div>
+                    ))
+                )}
               </div>
-            ))
-          )}
+            )}
+          </div>
+        </div>
+
+        <div className="requests-section">
+          <h2 className="section-title">Incoming Requests</h2>
+
+          {/* Request list */}
+          <div className="request-list">
+            {filteredRequests.length === 0 ? (
+              <div className="empty-state">No requests match your filters.</div>
+            ) : (
+              filteredRequests.map(req => (
+                <div key={req._id} className="request-item">
+                  <div className="request-content">
+                    <div className="request-header">
+                      <h3 className="request-title">{req.task?.title || req.task}</h3>
+                      <h4>Requester: {req.requester?.firstName}</h4>
+                      <p className="request-desc">{req.description}</p>
+                      <div className="actions">
+                        {req.status === "pending" ? (
+                          <>
+                            <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
+                            <button onClick={() => handleReject(req)} className="pill decline">Decline</button>
+                          </>
+                        ) : (
+                          <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
+                            {req.status}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>
+                </div>
+              ))
+            )}</div>
         </div>
       </div>
     </div>
