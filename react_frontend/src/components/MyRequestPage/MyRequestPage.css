@@ -244,6 +244,45 @@
   color: #222;
 }
 
+/* Status Button Styling */
+.status-button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: default;
+  text-transform: capitalize;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  text-align: center;
+}
+
+/* Status variants for buttons */
+.status-button.status-success {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-button.status-destructive {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.status-button.status-warning {
+  background-color: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fed7aa;
+}
+
+.status-button.status-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
 /* Status variants (normalized classes like in-progress) */
 .badge.in-progress { background:#fff3cd; color:#7a5a00; }
 .badge.backlog { background:#f5f5f5; color:#606060; }

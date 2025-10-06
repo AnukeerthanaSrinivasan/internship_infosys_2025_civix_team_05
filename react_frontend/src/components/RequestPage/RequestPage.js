@@ -177,55 +177,31 @@ function RequestPage() {
         <CalendarWidget storageKey="calendar-widget" />
       </div>
 
-      {/* Main content */}
-      <div className="main-content123">
-        <div className="top-bar123">
-          <form className="search-bar123">
-            <input type="text" placeholder="Search requests..." />
-          </form>
-
-          <div className="tabs">
-            <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
-            <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Pending</button>
-          </div>
-
-          {/* Notification bell */}
-          <div className="notification-container">
-            <FaBell className="notification-icon" onClick={toggleDropdown} />
-            {notifications.filter(n => !n.isRead).length > 0 && (
-              <span className="badge">{notifications.filter(n => !n.isRead).length}</span>
-            )}
-            {showDropdown && (
-  <div className="notification-dropdown">
-    {notifications.filter(n => !n.isRead).length === 0 ? (
-      <p>No notifications</p>
-    ) : (
-      notifications
-        .filter(n => !n.isRead) // only show unread
-        .map(n => (
-          <div key={n._id} className="notification-item unread">
-            <div>{n.message}</div>
-            <button 
-              className="mark-read-btn"
-              onClick={() => markAsRead(n._id)}
-            >
-              Mark as Read
+      {/* Main Content */}
+      <div className="main-content">
+        {/* Header - Search + Account only */}
+        <div className="top-header">
+          <form className="header-search" onSubmit={handleSearchSubmit}>
+            <button type="submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
             </button>
-          </div>
-        ))
-    )}
-  </div>
-)}
-
-
-          </div>
-
-          {/* User info */}
+            <input type="text" placeholder="Search requests..." value={searchQuery} onChange={handleSearchChange} />
+          </form>
           <div className="user-profile" ref={profileRef}>
+            <div className="notification-container">
+              <button className="notification-btn" onClick={() => navigate('/request')} title="View Notifications" style={{ border: 'none', background: 'none', padding: '8px', cursor: 'pointer' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                </svg>
+                <span className="notification-badge">{notifications.filter(n => !n.isRead).length}</span>
+              </button>
+            </div>
             <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
-              <div className="user-avatar">
-                <img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" />
-              </div>
+              <div className="user-avatar"><img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" /></div>
               <div className="user-info">
                 <div className="user-name">{userEmail.split('@')[0]}</div>
                 <div className="user-email">{userEmail}</div>
@@ -255,37 +231,47 @@ function RequestPage() {
           </div>
         </div>
 
-        <h2 className="section-title">Incoming Requests</h2>
-
-        {/* Request list */}
-        <div className="request-list">
-          {filteredRequests.length === 0 ? (
-            <p>No requests found.</p>
-          ) : (
-            filteredRequests.map((req) => (
-              <div className="request-item" key={req._id}>
-                <div className="request-info">
-                  <h4>Requester: {req.requester?.firstName }</h4>
-                  <div className="request-title">Task: {req.task?.title || req.task}</div>
-                  <p className="request-desc">{req.description}</p>
-                  <div className="actions">
-                    {req.status === "pending" ? (
-  <>
-    <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
-    <button onClick={() => handleReject(req)} className="pill decline">Decline</button>
-  </>
-) : (
-  <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
-    {req.status}
-  </span>
-)}
-
-                  </div>
-                </div>
-                <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>
+        <div className="scrollable-content">
+          {/* Page Title and Controls */}
+          <div className="page-controls">
+            <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h1 className="page-title">Incoming Requests</h1>
+              <div className="tabs">
+                <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
+                <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Unread</button>
               </div>
-            ))
-          )}
+            </div>
+          </div>
+
+          {/* Request list */}
+          <div className="request-list">
+            {filteredRequests.length === 0 ? (
+              <p>No requests found.</p>
+            ) : (
+              filteredRequests.map((req) => (
+                <div className="request-item" key={req._id}>
+                  <div className="request-info">
+                    <h4>Requester: {req.requester?.firstName }</h4>
+                    <div className="request-title">Task: {req.task?.title || req.task}</div>
+                    <p className="request-desc">{req.description}</p>
+                    <div className="actions">
+                      {req.status === "pending" ? (
+                        <>
+                          <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
+                          <button onClick={() => handleReject(req)} className="pill decline">Decline</button>
+                        </>
+                      ) : (
+                        <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
+                          {req.status}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

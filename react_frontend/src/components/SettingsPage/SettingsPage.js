@@ -121,7 +121,7 @@ const SettingsPage = () => {
       {/* Main Content */}
       <main className="settings-main">
         <div className="settings-content">
-          <h2>Account</h2>
+          <h1 className="page-title" style={{textAlign: 'center'}}>Account</h1>
           <p className="settings-desc">Update your account settings.</p>
 
           {/* Profile Picture */}

@@ -88,9 +88,12 @@ export default function MyRequestPage() {
   // Returns CSS class name based on status
   const getStatusClass = (status) => {
     switch (status.toLowerCase()) {
-      case 'accepted': return 'status-accepted';
-      case 'rejected': return 'status-rejected';
-      default: return 'status-pending';
+      case 'accepted': return 'status-success';
+      case 'rejected': return 'status-destructive';
+      case 'completed': return 'status-success';
+      case 'in progress': return 'status-warning';
+      case 'pending': return 'status-secondary';
+      default: return 'status-secondary';
     }
   };
 
@@ -129,82 +132,69 @@ export default function MyRequestPage() {
         <CalendarWidget storageKey="calendar-widget" />
       </div>
 
-      {/* Main content */}
-      <main className="main-content112">
-        <header className="page-header">
-          <div className="title-block">
-            <h1>My Requests</h1>
-            <p className="subtitle">Track the requests you have sent.</p>
-          </div>
-
-          <div className="controls">
-            <form className="search-form" onSubmit={e => e.preventDefault()}>
-              <button className="icon-btn" type="submit" aria-label="search">🔍</button>
-              <input
-                type="text"
-                placeholder="Search requests..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-              />
-            </form>
-
-            <div className="profile" ref={profileRef}>
-              <div className="profile-trigger" onClick={() => setShowProfileMenu(s => !s)}>
-                <img className="avatar" src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="user"/>
-                <div className="profile-text">
-                  <div className="user-info">
+      {/* Main Content */}
+      <div className="main-content">
+        {/* Header - Search + Account only */}
+        <div className="top-header">
+          <form className="header-search" onSubmit={e => e.preventDefault()}>
+            <button type="submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+            <input type="text" placeholder="Search requests..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          </form>
+          <div className="user-profile" ref={profileRef}>
+            <div className="notification-container">
+              <button className="notification-btn" onClick={() => navigate('/request')} title="View Notifications" style={{ border: 'none', background: 'none', padding: '8px', cursor: 'pointer' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                </svg>
+                <span className="notification-badge">0</span>
+              </button>
+            </div>
+            <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+              <div className="user-avatar"><img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" /></div>
+              <div className="user-info">
                 <div className="user-name">{userEmail.split('@')[0]}</div>
                 <div className="user-email">{userEmail}</div>
-
               </div>
-                </div>
-              </div>
-              {showProfileMenu && (
+            </div>
+            {showProfileMenu && (
               <div className="profile-dropdown">
                 <ul>
-                 
                   <li onClick={() => {
-        navigate('/settings');
-        setShowProfileMenu(false); // close dropdown after navigation
-      }}>
-        Account Settings
-      </li>
-                 
+                    navigate('/settings');
+                    setShowProfileMenu(false);
+                  }}>
+                    Account Settings
+                  </li>
                   <li onClick={() => {
-  const confirmLogout = window.confirm("Are you sure you want to logout?");
-  if (confirmLogout) {
-    localStorage.removeItem('token');
-    navigate('/login');
-  }
-}}>
-  Logout
-</li>
-
+                    const confirmLogout = window.confirm("Are you sure you want to logout?");
+                    if (confirmLogout) {
+                      localStorage.removeItem('token');
+                      navigate('/login');
+                    }
+                  }}>
+                    Logout
+                  </li>
                 </ul>
               </div>
             )}
-            </div>
           </div>
-        </header>
+        </div>
 
-        {/* Filters */}
-        <div className="secondary-controls">
-          <div className="left-controls">
-            <div className="filter-group">
-              <label>Status</label>
-              <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-                {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
+        <div className="scrollable-content">
+          {/* Page Title and Controls */}
+          <div className="page-controls">
+            <div className="title-section">
+              <h1 className="page-title">My Requests</h1>
+              <p className="subtitle">Helps to track the request you have sent.</p>
             </div>
             
           </div>
-
-          <div className="right-controls">
-            <div className="view-toggle">
-              <button className={`view-btn ${viewMode === 'table' ? 'active' : ''}`} onClick={() => setViewMode('table')}>☰</button>
-              <button className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')}>▦</button>
-            </div>
-          )}
 
           {loading && <div className="loading-msg">Loading your requests...</div>}
 
@@ -215,51 +205,34 @@ export default function MyRequestPage() {
           )}
 
           {!loading && filteredRequests.length > 0 && (
-            viewMode === 'table' ? (
-              <div className="table-holder">
-                <div className="request-table">
-                  <div className="table-head">
-                    <div className="col col-id">Task ID</div>
-                    <div className="col col-desc">Description</div>
-                    <div className="col col-status">Status</div>
-                  </div>
-                  {filteredRequests.map(req => (
-                    <div
-                      className="table-row"
-                      key={req.id}
-                      onClick={() => openTaskDetails(req.id)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <div className="col col-id">{req.id}</div>
-                      <div className="col col-desc">{req.description}</div>
-                      <div className={`col col-status ${getStatusClass(req.status)}`}>
-                        {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
-                      </div>
-                    </div>
-                  ))}
+            <div className="table-holder">
+              <div className="request-table">
+                <div className="table-head">
+                  <div className="col col-id">Task ID</div>
+                  <div className="col col-desc">Description</div>
+                  <div className="col col-status">Status</div>
                 </div>
-              </div>
-            ) : (
-              <div className="request-grid">
                 {filteredRequests.map(req => (
                   <div
-                    className={`request-card ${getStatusClass(req.status)}`}
+                    className="table-row"
                     key={req.id}
                     onClick={() => openTaskDetails(req.id)}
                     style={{ cursor: 'pointer' }}
                   >
-                    <h3>Task ID: {req.id}</h3>
-                    <p>{req.description}</p>
-                    <span className={`status ${getStatusClass(req.status)}`}>
-                      {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
-                    </span>
+                    <div className="col col-id" style={{ minWidth: '120px', wordBreak: 'break-all' }}>{req.id}</div>
+                    <div className="col col-desc" style={{ flex: 1, minWidth: '200px' }}>{req.description}</div>
+                    <div className={`col col-status ${getStatusClass(req.status)}`} style={{ minWidth: '100px' }}>
+                      <button className={`status-button ${getStatusClass(req.status)}`} disabled>
+                        {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
-            )
+            </div>
           )}
-        </section>
-      </main>
+        </div>
+      </div>
     </div>
   );
 }

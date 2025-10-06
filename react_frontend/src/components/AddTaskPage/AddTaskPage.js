@@ -76,7 +76,7 @@ const AddTaskPage = () => {
       {/* Main Content */}
       <div className="main-content1">
   <div className="task-card1">
-    <h2 className="task-title">Add New Task</h2>
+    <h1 className="page-title" style={{textAlign: 'center'}}>Add New Task</h1>
     <p className="task-subtitle">Create a task and find someone to help you</p>
 
     <form className="task-form" onSubmit={handleSubmit}>

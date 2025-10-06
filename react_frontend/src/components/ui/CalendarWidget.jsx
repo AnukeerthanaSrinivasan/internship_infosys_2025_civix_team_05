@@ -13,9 +13,10 @@ export default function CalendarWidget({ storageKey = 'calendar-widget' }) {
   };
 
   const persisted = readPersistedState();
-  const initialSelected = persisted?.selectedDate ? new Date(persisted.selectedDate) : new Date();
-  const initialMonth = persisted?.currentMonth ?? initialSelected.getMonth();
-  const initialYear = persisted?.currentYear ?? initialSelected.getFullYear();
+  const today = new Date();
+  const initialSelected = persisted?.selectedDate ? new Date(persisted.selectedDate) : today;
+  const initialMonth = persisted?.currentMonth ?? today.getMonth();
+  const initialYear = persisted?.currentYear ?? today.getFullYear();
 
   const [selectedDate, setSelectedDate] = useState(initialSelected);
   const [currentMonth, setCurrentMonth] = useState(initialMonth);
@@ -55,7 +56,11 @@ export default function CalendarWidget({ storageKey = 'calendar-widget' }) {
         i === selectedDate.getDate() &&
         currentMonth === selectedDate.getMonth() &&
         currentYear === selectedDate.getFullYear();
-      days.push({ day: i, currentMonth: true, selected: isSelected });
+      const isToday =
+        i === today.getDate() &&
+        currentMonth === today.getMonth() &&
+        currentYear === today.getFullYear();
+      days.push({ day: i, currentMonth: true, selected: isSelected, isToday: isToday });
     }
     for (let i = 1; i <= 42 - days.length; i++) {
       days.push({ day: i, currentMonth: false, selected: false });
@@ -85,7 +90,7 @@ export default function CalendarWidget({ storageKey = 'calendar-widget' }) {
         {generateCalendarDays().map((day, index) => (
           <div
             key={index}
-            className={`day ${!day.currentMonth ? 'prev-month' : ''} ${day.selected ? 'selected' : ''}`}
+            className={`day ${!day.currentMonth ? 'prev-month' : ''} ${day.selected ? 'selected' : ''} ${day.isToday ? 'today' : ''}`}
             onClick={() => handleDateSelect(day.day, day.currentMonth)}
           >
             {day.day}
