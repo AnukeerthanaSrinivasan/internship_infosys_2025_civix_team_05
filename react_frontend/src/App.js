@@ -14,6 +14,10 @@ import AddTaskPage from './components/AddTaskPage/AddTaskPage';
 import RequestPage from './components/RequestPage/RequestPage';
 import MyRequestPage from './components/MyRequestPage/MyRequestPage';
 import SettingsPage from './components/SettingsPage/SettingsPage';
+
+// Import the newly created TaskDetailsPage component
+import TaskDetailsPage from './components/TaskDetailsPage/TaskDetailsPage';
+
 function App() {
   return (
     <Router>
@@ -28,8 +32,11 @@ function App() {
           <Route path="/my-tasks" element={<MyTaskPage />} />
           <Route path="/add-task" element={<AddTaskPage />} />
           <Route path="/request" element={<RequestPage />} />
+          {/* Route for task list */}
           <Route path="/my-request" element={<MyRequestPage />} />
-          <Route path="/settings" element={<SettingsPage/>} />
+          {/* Route for viewing task details */}
+          <Route path="/my-request/:id" element={<TaskDetailsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </div>
     </Router>
