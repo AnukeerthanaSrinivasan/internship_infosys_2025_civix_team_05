@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FaBell } from "react-icons/fa"; 
 import "./RequestPage.css";
-import '../ui/header.css';
 import CalendarWidget from '../ui/CalendarWidget';
+import "./RequestPage.css";
 
 function RequestPage() {
   const navigate = useNavigate();
@@ -16,6 +16,8 @@ function RequestPage() {
   const [userEmail, setUserEmail] = useState('');
   const [notifications, setNotifications] = useState([]); 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const profileRef = useRef(null);
 
   // Get user email
   useEffect(() => {
@@ -23,19 +25,17 @@ function RequestPage() {
     if (email) setUserEmail(email);
   }, []);
 
-  
-    const profileRef = useRef(null);
-  
-    // Click outside profile dropdown
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (profileRef.current && !profileRef.current.contains(event.target)) {
-          setShowProfileMenu(false);
-        }
-      };
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+  // Click outside profile dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Fetch requests
   useEffect(() => {
     const fetchRequests = async () => {
@@ -67,120 +67,85 @@ function RequestPage() {
     };
 
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 5000); // poll every 5s
+    const interval = setInterval(fetchNotifications, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  // Toggle notification dropdown
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   // Accept request
-  // Accept request
-const handleAccept = async (reqItem) => {
-  try {
-    const token = localStorage.getItem("token");
-    console.log("Sending accept request:", {
-  taskId: reqItem.task?._id,
-  requester: reqItem.requester?._id || reqItem.requester,
-  description: reqItem.description
-});
-
-    const res = await axios.post(
-      "http://localhost:5000/api/myrequest/accept",
-      {
-        taskId: reqItem.task,
-        requester: reqItem.requester._id || reqItem.requester,
-        description: reqItem.description
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    // Update local state
-    setRequests(prev =>
-      prev.map(r =>
-        r._id === reqItem._id ? { ...r, status: "accepted" } : r
-      )
-    );
-  } catch (err) {
-    console.error("Error accepting request:", err.response?.data || err.message);
-  }
-};
-
-// Reject request
-const handleReject = async (reqItem) => {
-  try {
-    const token = localStorage.getItem("token");
-    const res = await axios.post(
-      "http://localhost:5000/api/myrequest/reject",
-      {
-        taskId: reqItem.task,
-        requester: reqItem.requester._id || reqItem.requester,
-        description: reqItem.description
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    // Update local state
-    setRequests(prev =>
-      prev.map(r => r._id === reqItem._id ? { ...r, status: "rejected" } : r)
-    );
-
-  } catch (err) {
-    console.error("Error rejecting request:", err.response?.data || err.message);
-  }
-};
-
-  // Calendar handled by CalendarWidget (state persisted)
-  
-    // Format date and time
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric', 
-        year: 'numeric' 
-      });
-    };
-  
-    const formatTime = (dateString) => {
-      const date = new Date(dateString);
-      return date.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true 
-      });
-    };
-  
-// Mark notification as read
-const markAsRead = async (notificationId) => {
-  try {
-    const token = localStorage.getItem("token");
-    const res = await axios.put(
-      "http://localhost:5000/api/notification/update",
-      { notificationId },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    // Update local state
-    setNotifications(prev =>
-      prev.map(n => n._id === notificationId ? { ...n, isRead: true } : n)
-    );
-  } catch (err) {
-    console.error("Error marking notification as read:", err);
-  }
-};
-
-  // Decline request
-  const handleDecline = (id) => {
-    setRequests(prev =>
-      prev.map(r => r._id === id ? { ...r, status: "rejected" } : r)
-    );
+  const handleAccept = async (reqItem) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "http://localhost:5000/api/myrequest/accept",
+        {
+          taskId: reqItem.task,
+          requester: reqItem.requester._id || reqItem.requester,
+          description: reqItem.description
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setRequests(prev =>
+        prev.map(r =>
+          r._id === reqItem._id ? { ...r, status: "accepted" } : r
+        )
+      );
+    } catch (err) {
+      console.error("Error accepting request:", err.response?.data || err.message);
+    }
   };
 
-  // Filter requests
-  const filteredRequests = activeTab === "unread"
+  // Reject request
+  const handleReject = async (reqItem) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "http://localhost:5000/api/myrequest/reject",
+        {
+          taskId: reqItem.task,
+          requester: reqItem.requester._id || reqItem.requester,
+          description: reqItem.description
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setRequests(prev =>
+        prev.map(r => r._id === reqItem._id ? { ...r, status: "rejected" } : r)
+      );
+    } catch (err) {
+      console.error("Error rejecting request:", err.response?.data || err.message);
+    }
+  };
+
+  // Mark notification as read
+  const markAsRead = async (notificationId) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        "http://localhost:5000/api/notification/update",
+        { notificationId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setNotifications(prev =>
+        prev.map(n => n._id === notificationId ? { ...n, isRead: true } : n)
+      );
+    } catch (err) {
+      console.error("Error marking notification as read:", err);
+    }
+  };
+
+  // Handle search
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+  const handleSearchSubmit = (e) => { e.preventDefault(); /* implement actual search filter if needed */ };
+
+  // Filter requests based on tab and search
+  const filteredRequests = (activeTab === "unread" 
     ? requests.filter(r => r.status === "pending")
-    : requests;
+    : requests
+  ).filter(r =>
+    (r.task?.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (r.description || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="request-container">
@@ -209,126 +174,118 @@ const markAsRead = async (notificationId) => {
             </li>
           </ul>
         </nav>
-        {/* Calendar */}
         <CalendarWidget storageKey="calendar-widget" />
       </div>
 
       {/* Main content */}
       <div className="main-content123">
-        {/* Header - Search + Account only */}
-        <div className="top-header">
-          <form className="header-search" onSubmit={(e)=>e.preventDefault()}>
-            <button type="submit">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </button>
-            <input type="text" placeholder="Search products..." />
+        <div className="top-bar123">
+          <form className="search-bar123">
+            <input type="text" placeholder="Search requests..." />
           </form>
 
-          <div className="user-profile" ref={profileRef}>
-            <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
-              <div className="user-avatar"><img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" /></div>
-              <div className="user-info">
-                <div className="user-name">{userEmail.split('@')[0]}</div>
-                <div className="user-email">{userEmail}</div>
-
-              </div>
-            </div>
-            {showProfileMenu && (
-              <div className="profile-dropdown">
-                <ul>
-                  
-                  <li onClick={() => {
-        navigate('/settings');
-        setShowProfileMenu(false); // close dropdown after navigation
-      }}>
-        Account Settings
-      </li>
-                  
-                  <li onClick={() => {
-  const confirmLogout = window.confirm("Are you sure you want to logout?");
-  if (confirmLogout) {
-    localStorage.removeItem('token');
-    navigate('/login');
-  }
-}}>
-  Logout
-</li>
-
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Move other header elements below */}
-        <div className="top-bar123">
           <div className="tabs">
             <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
             <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Pending</button>
           </div>
 
+          {/* Notification bell */}
           <div className="notification-container">
             <FaBell className="notification-icon" onClick={toggleDropdown} />
             {notifications.filter(n => !n.isRead).length > 0 && (
               <span className="badge">{notifications.filter(n => !n.isRead).length}</span>
             )}
             {showDropdown && (
-              <div className="notification-dropdown">
-                {notifications.filter(n => !n.isRead).length === 0 ? (
-                  <p>No notifications</p>
-                ) : (
-                  notifications
-                    .filter(n => !n.isRead)
-                    .map(n => (
-                      <div key={n._id} className="notification-item unread">
-                        <div>{n.message}</div>
-                        <button className="mark-read-btn" onClick={() => markAsRead(n._id)}>
-                          Mark as Read
-                        </button>
-                      </div>
-                    ))
-                )}
+  <div className="notification-dropdown">
+    {notifications.filter(n => !n.isRead).length === 0 ? (
+      <p>No notifications</p>
+    ) : (
+      notifications
+        .filter(n => !n.isRead) // only show unread
+        .map(n => (
+          <div key={n._id} className="notification-item unread">
+            <div>{n.message}</div>
+            <button 
+              className="mark-read-btn"
+              onClick={() => markAsRead(n._id)}
+            >
+              Mark as Read
+            </button>
+          </div>
+        ))
+    )}
+  </div>
+)}
+
+
+          </div>
+
+          {/* User info */}
+          <div className="user-profile" ref={profileRef}>
+            <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+              <div className="user-avatar">
+                <img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" />
+              </div>
+              <div className="user-info">
+                <div className="user-name">{userEmail.split('@')[0]}</div>
+                <div className="user-email">{userEmail}</div>
+              </div>
+            </div>
+            {showProfileMenu && (
+              <div className="profile-dropdown">
+                <ul>
+                  <li onClick={() => {
+                    navigate('/settings');
+                    setShowProfileMenu(false);
+                  }}>
+                    Account Settings
+                  </li>
+                  <li onClick={() => {
+                    const confirmLogout = window.confirm("Are you sure you want to logout?");
+                    if (confirmLogout) {
+                      localStorage.removeItem('token');
+                      navigate('/login');
+                    }
+                  }}>
+                    Logout
+                  </li>
+                </ul>
               </div>
             )}
           </div>
         </div>
 
-        <div className="requests-section">
-          <h2 className="section-title">Incoming Requests</h2>
+        <h2 className="section-title">Incoming Requests</h2>
 
-          {/* Request list */}
-          <div className="request-list">
-            {filteredRequests.length === 0 ? (
-              <div className="empty-state">No requests match your filters.</div>
-            ) : (
-              filteredRequests.map(req => (
-                <div key={req._id} className="request-item">
-                  <div className="request-content">
-                    <div className="request-header">
-                      <h3 className="request-title">{req.task?.title || req.task}</h3>
-                      <h4>Requester: {req.requester?.firstName}</h4>
-                      <p className="request-desc">{req.description}</p>
-                      <div className="actions">
-                        {req.status === "pending" ? (
-                          <>
-                            <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
-                            <button onClick={() => handleReject(req)} className="pill decline">Decline</button>
-                          </>
-                        ) : (
-                          <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
-                            {req.status}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+        {/* Request list */}
+        <div className="request-list">
+          {filteredRequests.length === 0 ? (
+            <p>No requests found.</p>
+          ) : (
+            filteredRequests.map((req) => (
+              <div className="request-item" key={req._id}>
+                <div className="request-info">
+                  <h4>Requester: {req.requester?.firstName }</h4>
+                  <div className="request-title">Task: {req.task?.title || req.task}</div>
+                  <p className="request-desc">{req.description}</p>
+                  <div className="actions">
+                    {req.status === "pending" ? (
+  <>
+    <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
+    <button onClick={() => handleReject(req)} className="pill decline">Decline</button>
+  </>
+) : (
+  <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
+    {req.status}
+  </span>
+)}
+
                   </div>
-                  <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>
                 </div>
-              ))
-            )}</div>
+                <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
