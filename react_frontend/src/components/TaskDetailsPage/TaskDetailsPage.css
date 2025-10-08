@@ -55,3 +55,44 @@
   border-radius: 6px;
   font-weight: 600;
 }
+
+/* TaskDetailsPage Responsive */
+@media (max-width: 1024px) {
+  .task-details-container {
+    padding: 16px;
+  }
+
+  .task-details-card {
+    padding: 16px;
+  }
+
+  .back-btn {
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .task-details-card h2 {
+    font-size: 18px;
+  }
+
+  .task-details-card p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .task-details-card h2 {
+    font-size: 16px;
+  }
+
+  .task-details-card p {
+    font-size: 13px;
+  }
+
+  .back-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}
+

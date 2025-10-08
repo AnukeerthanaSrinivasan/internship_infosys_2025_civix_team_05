@@ -138,3 +138,38 @@ h1 {
     font-size: 16px;
   }
 }
+/* OtpPage Responsive */
+@media (max-width: 768px) {
+  .otp-container {
+    padding: 16px;
+  }
+
+  .otp-form {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .otp-input {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .otp-button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .otp-input {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+
+  .otp-button {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+}

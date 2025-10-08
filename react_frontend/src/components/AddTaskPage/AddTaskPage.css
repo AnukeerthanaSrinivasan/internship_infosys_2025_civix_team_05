@@ -1,3 +1,4 @@
+
 .feed-container {
   display: flex;
   height: 100vh;        /* full screen height */
@@ -87,4 +88,43 @@
 
 .btn-submit:hover {
   background-color: #242426;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .add-task-container {
+    padding: 20px;
+  }
+
+  .add-task-form {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .add-task-form input,
+  .add-task-form textarea,
+  .add-task-form select,
+  .add-task-form button {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-task-form {
+    width: 95%;
+  }
+
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    font-size: 13px;
+  }
 }

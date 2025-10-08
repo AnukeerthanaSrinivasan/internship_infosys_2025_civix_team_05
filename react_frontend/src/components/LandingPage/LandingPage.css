@@ -112,3 +112,41 @@ body {
     padding-top: 60px;
   }
 }
+
+/* LandingPage Responsive */
+@media (max-width: 1024px) {
+  .landing-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .landing-left,
+  .landing-right {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-title {
+    font-size: 28px;
+  }
+
+  .landing-subtitle {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-title {
+    font-size: 22px;
+  }
+
+  .landing-subtitle {
+    font-size: 16px;
+  }
+
+  .landing-button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}

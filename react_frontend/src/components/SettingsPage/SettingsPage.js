@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SettingsPage.css";
-import CalendarWidget from '../ui/CalendarWidget';
+
+const navTabs = [
+  { id: "feed", label: "Feed", path: "/feed" },
+  { id: "myTasks", label: "My Tasks", path: "/my-tasks" },
+  { id: "requests", label: "Requests", path: "/request" },
+  { id: "myRequests", label: "My Requests", path: "/my-request" },
+  { id: "addTask", label: "Add Task", path: "/add-task" },
+  { id: "settings", label: "Settings", path: "/settings" },
+];
 
 const SettingsPage = () => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState("settings");
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
-  const [currentYear, setCurrentYear] = useState(selectedDate.getFullYear());
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -20,8 +24,6 @@ const SettingsPage = () => {
     profilePic: null,
     profilePicPreview: null,
   });
-
-  // Calendar handled by CalendarWidget (state persisted)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,84 +49,31 @@ const SettingsPage = () => {
     });
   };
 
-  const monthName = new Date(
-    currentYear,
-    currentMonth
-  ).toLocaleString("default", { month: "long" });
-
   return (
-    <div className="settings-container">
-      {/* Sidebar */}
-      <aside className="sidebar">
+    <div className="settings-page-container">
+      <nav className="settings-nav">
         <div className="logo">Hire A Helper</div>
-        <ul className="sidebar-nav">
-          <li
-            className={activeNav === "feed" ? "active" : ""}
-            onClick={() => {
-              setActiveNav("feed");
-              navigate("/feed");
-            }}
-          >
-            Feed
-          </li>
-          <li
-            className={activeNav === "myTasks" ? "active" : ""}
-            onClick={() => {
-              setActiveNav("myTasks");
-              navigate("/my-tasks");
-            }}
-          >
-            My Tasks
-          </li>
-          <li
-            className={activeNav === "requests" ? "active" : ""}
-            onClick={() => {
-              setActiveNav("requests");
-              navigate("/request");
-            }}
-          >
-            Requests
-          </li>
-          <li
-            className={activeNav === "myRequests" ? "active" : ""}
-            onClick={() => {
-              setActiveNav("myRequests");
-              navigate("/my-request");
-            }}
-          >
-            My Requests
-          </li>
-          <li
-            className={activeNav === "addTask" ? "active" : ""}
-            onClick={() => {
-              setActiveNav("addTask");
-              navigate("/add-task");
-            }}
-          >
-            Add Task
-          </li>
-          <li
-            className={activeNav === "settings" ? "active" : ""}
-            onClick={() => {
-              setActiveNav("settings");
-              navigate("/settings");
-            }}
-          >
-            Settings
-          </li>
+        <ul className="settings-nav-list">
+          {navTabs.map((tab) => (
+            <li
+              key={tab.id}
+              className={activeNav === tab.id ? "active" : ""}
+              onClick={() => {
+                setActiveNav(tab.id);
+                navigate(tab.path);
+              }}
+            >
+              {tab.label}
+            </li>
+          ))}
         </ul>
+      </nav>
 
-        {/* Calendar */}
-        <CalendarWidget storageKey="calendar-widget" />
-      </aside>
-
-      {/* Main Content */}
       <main className="settings-main">
         <div className="settings-content">
-          <h1 className="page-title" style={{textAlign: 'center'}}>Account</h1>
+          <h1 className="page-title">Account</h1>
           <p className="settings-desc">Update your account settings.</p>
 
-          {/* Profile Picture */}
           <div className="profile-pic-block">
             <div className="profile-pic-container">
               {formData.profilePicPreview ? (
@@ -145,7 +94,6 @@ const SettingsPage = () => {
               >
                 Change Photo
               </button>
-
               <input
                 id="fileInput"
                 type="file"
@@ -153,7 +101,6 @@ const SettingsPage = () => {
                 style={{ display: "none" }}
                 onChange={handleProfilePicChange}
               />
-
               <button
                 type="button"
                 className="btn-secondary"
@@ -165,7 +112,6 @@ const SettingsPage = () => {
             </div>
           </div>
 
-          {/* Settings Form */}
           <form className="settings-form">
             <div className="form-group name-row">
               <div>
@@ -238,4 +184,3 @@ const SettingsPage = () => {
 };
 
 export default SettingsPage;
-

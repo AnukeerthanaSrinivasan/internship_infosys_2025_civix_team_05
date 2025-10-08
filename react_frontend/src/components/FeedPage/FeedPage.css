@@ -398,3 +398,36 @@
     margin-top: 0; /* Remove top margin on mobile */
   }
 }
+
+/* FeedPage Responsive */
+@media (max-width: 1024px) {
+  .feed-container {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .feed-card {
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .feed-card h3 {
+    font-size: 18px;
+  }
+
+  .feed-card p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .feed-card h3 {
+    font-size: 16px;
+  }
+
+  .feed-card p {
+    font-size: 13px;
+  }
+}
+

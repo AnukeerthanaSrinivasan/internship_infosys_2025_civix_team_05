@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { FaBell } from "react-icons/fa"; 
-import "./RequestPage.css";
 import CalendarWidget from '../ui/CalendarWidget';
 import "./RequestPage.css";
 
@@ -14,8 +12,7 @@ function RequestPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [requests, setRequests] = useState([]);
   const [userEmail, setUserEmail] = useState('');
-  const [notifications, setNotifications] = useState([]); 
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const profileRef = useRef(null);
 
@@ -52,7 +49,7 @@ function RequestPage() {
     fetchRequests();
   }, []);
 
-  // Fetch notifications initially and every 5 seconds
+  // Fetch notifications
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -65,80 +62,43 @@ function RequestPage() {
         console.error("Error fetching notifications:", err);
       }
     };
-
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const toggleDropdown = () => setShowDropdown(!showDropdown);
-
-  // Accept request
+  // Accept/Reject
   const handleAccept = async (reqItem) => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
         "http://localhost:5000/api/myrequest/accept",
-        {
-          taskId: reqItem.task,
-          requester: reqItem.requester._id || reqItem.requester,
-          description: reqItem.description
-        },
+        { taskId: reqItem.task, requester: reqItem.requester._id || reqItem.requester, description: reqItem.description },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setRequests(prev =>
-        prev.map(r =>
-          r._id === reqItem._id ? { ...r, status: "accepted" } : r
-        )
-      );
+      setRequests(prev => prev.map(r => r._id === reqItem._id ? { ...r, status: "accepted" } : r));
     } catch (err) {
-      console.error("Error accepting request:", err.response?.data || err.message);
+      console.error(err);
     }
   };
 
-  // Reject request
   const handleReject = async (reqItem) => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
         "http://localhost:5000/api/myrequest/reject",
-        {
-          taskId: reqItem.task,
-          requester: reqItem.requester._id || reqItem.requester,
-          description: reqItem.description
-        },
+        { taskId: reqItem.task, requester: reqItem.requester._id || reqItem.requester, description: reqItem.description },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setRequests(prev =>
-        prev.map(r => r._id === reqItem._id ? { ...r, status: "rejected" } : r)
-      );
+      setRequests(prev => prev.map(r => r._id === reqItem._id ? { ...r, status: "rejected" } : r));
     } catch (err) {
-      console.error("Error rejecting request:", err.response?.data || err.message);
+      console.error(err);
     }
   };
 
-  // Mark notification as read
-  const markAsRead = async (notificationId) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        "http://localhost:5000/api/notification/update",
-        { notificationId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setNotifications(prev =>
-        prev.map(n => n._id === notificationId ? { ...n, isRead: true } : n)
-      );
-    } catch (err) {
-      console.error("Error marking notification as read:", err);
-    }
-  };
-
-  // Handle search
+  // Search
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
-  const handleSearchSubmit = (e) => { e.preventDefault(); /* implement actual search filter if needed */ };
 
-  // Filter requests based on tab and search
   const filteredRequests = (activeTab === "unread" 
     ? requests.filter(r => r.status === "pending")
     : requests
@@ -154,24 +114,18 @@ function RequestPage() {
         <div className="logo">Hire A Helper</div>
         <nav className="sidebar-nav">
           <ul>
-            <li className={activeNav === 'feed' ? 'active' : ''} onClick={() => { setActiveNav('feed'); navigate('/feed'); }}>
-              <span>Feed</span>
-            </li>
-            <li className={activeNav === 'myTasks' ? 'active' : ''} onClick={() => { setActiveNav('myTasks'); navigate('/my-tasks'); }}>
-              <span>My Tasks</span>
-            </li>
-            <li className={activeNav === 'requests' ? 'active' : ''} onClick={() => { setActiveNav('requests'); navigate('/request'); }}>
-              <span>Requests</span>
-            </li>
-            <li className={activeNav === 'myRequests' ? 'active' : ''} onClick={() => { setActiveNav('myRequests'); navigate('/my-request'); }}>
-              <span>My Requests</span>
-            </li>
-            <li className={activeNav === 'addTask' ? 'active' : ''} onClick={() => { setActiveNav('addTask'); navigate('/add-task'); }}>
-              <span>Add Task</span>
-            </li>
-            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => setActiveNav('settings')}>
-              <span>Settings</span>
-            </li>
+            {["feed","myTasks","requests","myRequests","addTask","settings"].map((nav) => (
+              <li
+                key={nav}
+                className={activeNav === nav ? "active" : ""}
+                onClick={() => {
+                  setActiveNav(nav);
+                  navigate(nav === "feed" ? "/feed" : nav === "myTasks" ? "/my-tasks" : nav === "requests" ? "/request" : nav === "myRequests" ? "/my-request" : nav === "addTask" ? "/add-task" : "/settings");
+                }}
+              >
+                <span>{nav === "myTasks" ? "My Tasks" : nav === "myRequests" ? "My Requests" : nav === "addTask" ? "Add Task" : nav.charAt(0).toUpperCase() + nav.slice(1)}</span>
+              </li>
+            ))}
           </ul>
         </nav>
         <CalendarWidget storageKey="calendar-widget" />
@@ -179,27 +133,13 @@ function RequestPage() {
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Header - Search + Account only */}
-        <div className="top-header">
-          <form className="header-search" onSubmit={handleSearchSubmit}>
-            <button type="submit">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </button>
+        {/* Header */}
+        <div className="header1">
+          <div className="search-bar123">
             <input type="text" placeholder="Search requests..." value={searchQuery} onChange={handleSearchChange} />
-          </form>
+          </div>
+
           <div className="user-profile" ref={profileRef}>
-            <div className="notification-container">
-              <button className="notification-btn" onClick={() => navigate('/request')} title="View Notifications" style={{ border: 'none', background: 'none', padding: '8px', cursor: 'pointer' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-                </svg>
-                <span className="notification-badge">{notifications.filter(n => !n.isRead).length}</span>
-              </button>
-            </div>
             <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
               <div className="user-avatar"><img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" /></div>
               <div className="user-info">
@@ -210,21 +150,8 @@ function RequestPage() {
             {showProfileMenu && (
               <div className="profile-dropdown">
                 <ul>
-                  <li onClick={() => {
-                    navigate('/settings');
-                    setShowProfileMenu(false);
-                  }}>
-                    Account Settings
-                  </li>
-                  <li onClick={() => {
-                    const confirmLogout = window.confirm("Are you sure you want to logout?");
-                    if (confirmLogout) {
-                      localStorage.removeItem('token');
-                      navigate('/login');
-                    }
-                  }}>
-                    Logout
-                  </li>
+                  <li onClick={() => { navigate('/settings'); setShowProfileMenu(false); }}>Account Settings</li>
+                  <li onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}>Logout</li>
                 </ul>
               </div>
             )}
@@ -232,33 +159,24 @@ function RequestPage() {
         </div>
 
         <div className="scrollable-content">
-          {/* Page Title and Controls */}
-          <div className="page-controls">
-            <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <h1 className="page-title">Incoming Requests</h1>
-              <div className="tabs">
-                <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Req</button>
-                <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Unread</button>
-              </div>
-            </div>
+          <div className="tabs">
+            <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Requests</button>
+            <button className={activeTab === "unread" ? "active" : ""} onClick={() => setActiveTab("unread")}>Unread</button>
           </div>
 
-          {/* Request list */}
           <div className="request-list">
-            {filteredRequests.length === 0 ? (
-              <p>No requests found.</p>
-            ) : (
-              filteredRequests.map((req) => (
+            {filteredRequests.length === 0 ? <p>No requests found.</p> :
+              filteredRequests.map(req => (
                 <div className="request-item" key={req._id}>
                   <div className="request-info">
-                    <h4>Requester: {req.requester?.firstName }</h4>
+                    <h4>Requester: {req.requester?.firstName}</h4>
                     <div className="request-title">Task: {req.task?.title || req.task}</div>
                     <p className="request-desc">{req.description}</p>
                     <div className="actions">
                       {req.status === "pending" ? (
                         <>
-                          <button onClick={() => handleAccept(req)} className="pill accept">Accept</button>
-                          <button onClick={() => handleReject(req)} className="pill decline">Decline</button>
+                          <button className="pill accept" onClick={() => handleAccept(req)}>Accept</button>
+                          <button className="pill decline" onClick={() => handleReject(req)}>Decline</button>
                         </>
                       ) : (
                         <span className={`pill status ${req.status === "accepted" ? "accept-badge" : "decline-badge"}`}>
@@ -269,8 +187,7 @@ function RequestPage() {
                   </div>
                   <div className="request-time">{new Date(req.createdAt).toLocaleString()}</div>
                 </div>
-              ))
-            )}
+              ))}
           </div>
         </div>
       </div>

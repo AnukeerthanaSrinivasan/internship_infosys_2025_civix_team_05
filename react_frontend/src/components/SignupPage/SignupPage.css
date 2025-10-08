@@ -150,3 +150,28 @@ body {
     gap: 0;
   }
 }
+/* SignupPage Responsive */
+@media (max-width: 1024px) {
+  .signup-container {
+    flex-direction: column-reverse;
+  }
+  
+  .signup-form-container,
+  .signup-image {
+    width: 100%;
+  }
+
+  .signup-image {
+    height: 30vh;
+  }
+
+  .signup-form {
+    width: 90%;
+    padding: 0 20px;
+  }
+
+  .name-fields {
+    flex-direction: column;
+    gap: 0;
+  }
+}

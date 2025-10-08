@@ -163,3 +163,49 @@ body {
     padding: 0 20px;
   }
 }
+/* LoginPage Responsive */
+@media (max-width: 1024px) {
+  .login-container {
+    flex-direction: column-reverse;
+  }
+
+  .login-form-container,
+  .login-image {
+    width: 100%;
+  }
+
+  .login-image {
+    height: 30vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-form {
+    width: 90%;
+    padding: 0 16px;
+  }
+
+  .login-form h1 {
+    font-size: 20px;
+  }
+
+  .login-form input {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .login-button {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-image {
+    height: 25vh;
+  }
+
+  .login-form h1 {
+    font-size: 18px;
+  }
+}
