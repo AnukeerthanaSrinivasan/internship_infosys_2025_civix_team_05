@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import CalendarWidget from '../ui/CalendarWidget';
 import "./RequestPage.css";
+import '../ui/header.css';
 
 function RequestPage() {
   const navigate = useNavigate();
@@ -134,12 +135,26 @@ function RequestPage() {
       {/* Main Content */}
       <div className="main-content">
         {/* Header */}
-        <div className="header1">
-          <div className="search-bar123">
+        <div className="top-header">
+          <form className="header-search" onSubmit={e => e.preventDefault()}>
+            <button type="submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
             <input type="text" placeholder="Search requests..." value={searchQuery} onChange={handleSearchChange} />
-          </div>
-
+          </form>
           <div className="user-profile" ref={profileRef}>
+            <div className="notification-container">
+              <button className="notification-btn" onClick={() => navigate('/request')} title="View Notifications" style={{ border: 'none', background: 'none', padding: '8px', cursor: 'pointer' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                </svg>
+                <span className="notification-badge">{notifications.filter(n => !n.isRead).length}</span>
+              </button>
+            </div>
             <div className="profile-container" onClick={() => setShowProfileMenu(!showProfileMenu)}>
               <div className="user-avatar"><img src={`https://ui-avatars.com/api/?name=${userEmail[0] || 'U'}&background=6c5ce7&color=fff`} alt="User" /></div>
               <div className="user-info">

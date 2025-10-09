@@ -6,77 +6,104 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-/* Container */
-.settings-container {
+/* Container - Using feed-container pattern */
+.feed-container {
   display: flex;
   height: 100vh;
   background: #fff;
   color: #111827;
+  overflow: hidden;
 }
 
-/* Sidebar */
-.settings-sidebar {
-  width: 220px;
+/* Sidebar - Using standard sidebar pattern */
+.sidebar {
+  width: 180px;
   background-color: #fff;
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid #e1e1e1;
   display: flex;
   flex-direction: column;
-  padding-top: 20px;
+  height: 100%;
   overflow-y: auto;
 }
 
-.settings-sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.settings-sidebar li {
-  padding: 12px 18px;
+.logo {
+  height: 56px;  /* Match header height */
+  padding: 0 16px;  /* Remove top/bottom padding, keep horizontal */
+  font-weight: 600;
   font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  color: #111827;
-  transition: background 0.2s, color 0.2s;
-}
-
-.settings-sidebar li:hover {
-  background: #f3f4f6;
-}
-
-.settings-sidebar li.active {
-  background: #111827;
-  color: #fff;
-}
-
-/* Main Content */
-.settings-main {
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
+  border-bottom: 1px solid #e5e7eb;  /* Match header border color */
   display: flex;
-  justify-content: center;
+  align-items: center;
 }
 
-.settings-content {
-  width: 100%;
+.logo::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #000;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.sidebar-nav {
+  flex: 1;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+}
+
+.sidebar-nav li {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-nav li:hover {
+  background-color: #f0f0f0;
+}
+
+.sidebar-nav li.active {
+  background-color: #000;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Main Content - Using main-content1 pattern */
+.main-content1 {
+  flex: 1;
+  background-color: #f9f9f9;
+  overflow-y: auto;     /* ✅ critical for scrollable content */
+  padding: 40px;
+}
+
+.task-card1 {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   max-width: 600px;
+  margin: 0 auto 40px;  /* bottom space so the button clears */
+  width: 100%;
 }
 
 /* Headings */
-.settings-content h2 {
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
   margin-bottom: 8px;
   color: #111827;
 }
 
-.settings-content .desc {
+.task-subtitle {
   text-align: center;
   color: #6b7280;
-  font-size: 13px;
-  margin-bottom: 20px;
+  font-size: 14px;
+  margin-bottom: 24px;
 }
 
 /* Profile Section */
@@ -135,22 +162,9 @@
   background: #374151;
 }
 
-.btn-secondary {
-  background: #f3f4f6;
-  color: #111827;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-}
+/* Removed duplicate btn-secondary - using the one below with consistent styling */
 
-.btn-secondary:hover {
-  background: #e5e7eb;
-}
-
-/* Form */
+/* Form - Using AddTaskPage pattern */
 .settings-form {
   display: flex;
   flex-direction: column;
@@ -159,7 +173,7 @@
 
 .form-row {
   display: flex;
-  gap: 10px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
@@ -167,22 +181,24 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 200px;
 }
 
 .settings-form label {
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;
   color: #374151;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .settings-form input {
-  padding: 8px 12px;
+  padding: 10px 12px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 14px;
   color: #111827;
   background: #fff;
+  transition: border-color 0.2s ease;
 }
 
 .settings-form input:focus {
@@ -190,64 +206,144 @@
   outline: none;
 }
 
-/* Form Actions */
+/* Form Actions - Using AddTaskPage pattern */
 .form-actions {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
+  align-items: stretch;  /* Make buttons stretch to same height */
+  gap: 12px;
+  margin-top: 24px;
+  min-height: 44px;  /* Ensure container height matches button height */
+}
+
+.btn-submit {
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 12px 24px;
+  transition: background-color 0.2s ease;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+.btn-submit:hover {
+  background-color: #333;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #111827;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 12px 24px;
+  transition: background-color 0.2s ease;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+/* Ensure perfect button alignment */
+.btn-submit,
+.btn-secondary {
+  margin: 0;
+  position: relative;
+  top: 0;
+  bottom: 0;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .settings-container {
+  .feed-container {
     flex-direction: column;
   }
 
-  .settings-sidebar {
+  .sidebar {
     width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e5e7eb;
+    height: auto;
     flex-direction: row;
     overflow-x: auto;
-    padding: 0;
+    border-right: none;
+    border-bottom: 1px solid #e1e1e1;
   }
 
-  .settings-sidebar ul {
+  .sidebar-nav ul {
     display: flex;
-    width: 100%;
+    gap: 8px;
   }
 
-  .settings-sidebar li {
-    flex: 1;
-    text-align: center;
-    padding: 12px;
+  .sidebar-nav li {
+    padding: 8px 12px;
     white-space: nowrap;
   }
 
-  .settings-main {
+  .main-content1 {
     padding: 20px;
+  }
+
+  .task-card1 {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-group {
+    min-width: auto;
   }
 }
 
 @media (max-width: 480px) {
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-    font-size: 12px;
-    padding: 8px;
+  .main-content1 {
+    padding: 16px;
   }
 
-  .settings-content h2 {
-    font-size: 16px;
+  .task-card1 {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .btn-submit,
+  .btn-secondary {
+    width: 100%;
+    font-size: 14px;
+    padding: 12px;
+    height: 44px;  /* Maintain consistent height on mobile */
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 8px;
   }
 
   .settings-form label {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .settings-form input {
-    font-size: 12px;
-    padding: 7px 10px;
+    font-size: 13px;
+    padding: 8px 10px;
   }
 }
