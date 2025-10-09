@@ -431,3 +431,56 @@
   }
 }
 
+/* Header Search - responsive */
+.header-search {
+  flex: 1 1 auto;        /* grow/shrink as needed */
+  display: flex;
+  align-items: center;
+  min-width: 150px;      /* don't shrink too small */
+  max-width: 400px;      /* optional max width */
+}
+
+.header-search input {
+  width: 100%;           /* fill available space */
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.header-search button {
+  background: none;
+  border: none;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* Responsive adjustments
+@media (max-width: 1024px) {
+  .header-search {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .header-search {
+    order: 2;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 8px;
+  }
+} */
+ /* Avatar + Notification Badge - Responsive Fix
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* spacing between avatar and notification 
+}
+*/
