@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./SettingsPage.css";
 import '../ui/header.css';
 import CalendarWidget from '../ui/CalendarWidget';
+import { Home, ClipboardList, MailOpen, Mail, Plus, Settings } from 'lucide-react';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -69,12 +70,42 @@ export default function SettingsPage() {
         <div className="logo">Hire A Helper</div>
         <nav className="sidebar-nav">
           <ul>
-            <li onClick={() => navigate('/feed')}>Feed</li>
-            <li onClick={() => navigate('/my-tasks')}>My Tasks</li>
-            <li onClick={() => navigate('/request')}>Requests</li>
-            <li onClick={() => navigate('/my-request')}>My Requests</li>
-            <li onClick={() => navigate('/add-task')}>Add Task</li>
-            <li className="active">Settings</li>
+            <li onClick={() => navigate('/feed')}>
+              <div className="nav-item">
+                <Home className="nav-icon" />
+                <span>Feed</span>
+              </div>
+            </li>
+            <li onClick={() => navigate('/my-tasks')}>
+              <div className="nav-item">
+                <ClipboardList className="nav-icon" />
+                <span>My Tasks</span>
+              </div>
+            </li>
+            <li onClick={() => navigate('/request')}>
+              <div className="nav-item">
+                <MailOpen className="nav-icon request-icon" />
+                <span>Requests</span>
+              </div>
+            </li>
+            <li onClick={() => navigate('/my-request')}>
+              <div className="nav-item">
+                <Mail className="nav-icon my-request-icon" />
+                <span>My Requests</span>
+              </div>
+            </li>
+            <li onClick={() => navigate('/add-task')}>
+              <div className="nav-item">
+                <Plus className="nav-icon" />
+                <span>Add Task</span>
+              </div>
+            </li>
+            <li className="active">
+              <div className="nav-item">
+                <Settings className="nav-icon" />
+                <span>Settings</span>
+              </div>
+            </li>
           </ul>
         </nav>
         <CalendarWidget storageKey="calendar-widget" />

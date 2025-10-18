@@ -5,6 +5,7 @@ import './FeedPage.css';
 import '../ui/button.css';
 import CalendarWidget from '../ui/CalendarWidget';
 import '../ui/header.css';
+import { Home, ClipboardList, MailOpen, Mail, Plus, Settings } from 'lucide-react';
 
 const FeedPage = () => {
   const [tasks, setTasks] = useState([]);
@@ -204,17 +205,42 @@ const handleRequest = async (taskId, taskDescription, taskOwnerId, taskTitle) =>
         <nav className="sidebar-nav">
           <ul>
             <li className={activeNav === 'feed' ? 'active' : ''} onClick={() => setActiveNav('feed')}>
-              <span>Feed</span><span className="count1">{tasks.length}</span>
+              <div className="nav-item">
+                <Home className="nav-icon" />
+                <span>Feed</span>
+              </div>
+              <span className="count1">{tasks.length}</span>
             </li>
             <li className={activeNav === 'myTasks' ? 'active' : ''} onClick={() => { setActiveNav('myTasks'); navigate('/my-tasks'); }}>
-              <span>My Tasks</span>
+              <div className="nav-item">
+                <ClipboardList className="nav-icon" />
+                <span>My Tasks</span>
+              </div>
             </li>
-            <li className={activeNav === 'requests' ? 'active' : ''} onClick={() => {setActiveNav('requests'); navigate('/request'); }}><span>Requests</span></li>
-            <li className={activeNav === 'myRequests' ? 'active' : ''} onClick={() => {setActiveNav('myRequests'); navigate('/my-request');}}><span>My Requests</span></li>
+            <li className={activeNav === 'requests' ? 'active' : ''} onClick={() => {setActiveNav('requests'); navigate('/request'); }}>
+              <div className="nav-item">
+                <MailOpen className="nav-icon request-icon" />
+                <span>Requests</span>
+              </div>
+            </li>
+            <li className={activeNav === 'myRequests' ? 'active' : ''} onClick={() => {setActiveNav('myRequests'); navigate('/my-request');}}>
+              <div className="nav-item">
+                <Mail className="nav-icon my-request-icon" />
+                <span>My Requests</span>
+              </div>
+            </li>
             <li className={activeNav === 'addTask' ? 'active' : ''} onClick={() => { setActiveNav('addTask'); navigate('/add-task'); }}>
-              <span>Add Task</span>
+              <div className="nav-item">
+                <Plus className="nav-icon" />
+                <span>Add Task</span>
+              </div>
             </li>
-            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => {setActiveNav('settings'); navigate('/settings')}}><span>Settings</span></li>
+            <li className={activeNav === 'settings' ? 'active' : ''} onClick={() => {setActiveNav('settings'); navigate('/settings')}}>
+              <div className="nav-item">
+                <Settings className="nav-icon" />
+                <span>Settings</span>
+              </div>
+            </li>
           </ul>
         </nav>
 

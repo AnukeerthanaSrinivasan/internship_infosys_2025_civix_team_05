@@ -70,6 +70,62 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.nav-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+/* Default icon color - dark gray */
+.sidebar-nav li .nav-icon {
+  color: #6b7280;
+}
+
+/* Active state - white icons */
+.sidebar-nav li.active .nav-icon {
+  color: white;
+}
+
+/* Hover state - darker icons */
+.sidebar-nav li:hover .nav-icon {
+  color: #374151;
+}
+
+.sidebar-nav li.active:hover .nav-icon {
+  color: white;
+}
+
+/* Request page icon variations */
+.request-icon {
+  /* MailOpen icon - slightly different styling */
+  transform: scale(1.05);
+}
+
+.my-request-icon {
+  /* Mail icon - different styling to distinguish from requests */
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+/* Special styling for request icons */
+.sidebar-nav li:hover .request-icon {
+  transform: scale(1.1);
+  color: #3b82f6;
+}
+
+.sidebar-nav li:hover .my-request-icon {
+  transform: scale(1.0);
+  color: #8b5cf6;
+}
+
 .count2 {
   background-color: rgba(255,255,255,0.2);
   border-radius: 10px;
